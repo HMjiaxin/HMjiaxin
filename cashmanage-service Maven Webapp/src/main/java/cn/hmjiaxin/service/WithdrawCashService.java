@@ -48,7 +48,7 @@ public class WithdrawCashService {
 	}
 
 	public BusinessAccount findBusinessAccountById(int businessId) {
-		BusinessAccount ba= accountDao.findByBusinessID(businessId);
+		BusinessAccount ba= accountDao.findByBusinessId(businessId);
 		return ba;
 	}
 

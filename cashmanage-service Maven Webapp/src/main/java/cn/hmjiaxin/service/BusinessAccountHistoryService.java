@@ -58,14 +58,8 @@ public class BusinessAccountHistoryService {
 		return true;
 	}
 
-	public List<BusinessAccountHistory> findBybusinessID(String businessID) {
-		int businessid=0;
-		try {
-			businessid=Integer.parseInt(businessID);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return accountHistoryDao.findByBusinessID(businessid);
+	public List<BusinessAccountHistory> findBybusinessId(int businessId) {
+		return accountHistoryDao.findByBusinessId(businessId);
 //		return null;
 	}
 

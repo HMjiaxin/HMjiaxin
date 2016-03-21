@@ -1,5 +1,8 @@
 package cn.hmjiaxin.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +18,15 @@ public class BusinessAccountService {
 	}
 
 	public BusinessAccount findAccountById(int businessId) {
-		BusinessAccount ba= accountDao.findByBusinessID(businessId);
+		BusinessAccount ba= accountDao.findByBusinessId(businessId);
 		return ba;
+	}
+
+	public BigDecimal getScoreByBessinessId(int businessID) {
+		BusinessAccount ba= accountDao.findByBusinessId(businessID);
+		BigDecimal score=ba.getScore();
+		
+		return null;
 	}
 
 }

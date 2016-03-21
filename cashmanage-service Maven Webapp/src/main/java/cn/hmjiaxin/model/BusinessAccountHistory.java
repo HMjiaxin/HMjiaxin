@@ -25,9 +25,9 @@ public class BusinessAccountHistory implements Serializable{
 	@GeneratedValue
 	private int id;
 	@Column(name = "business_id")
-	private int businessID;
+	private int businessId;
 	@Column(name = "user_id")
-	private int userID;
+	private int userId;
 	@Column(name = "score")
 	private BigDecimal score;
 	@Column(name = "description")
@@ -50,20 +50,20 @@ public class BusinessAccountHistory implements Serializable{
 		this.id = id;
 	}
 
-	public int getBusinessID() {
-		return businessID;
+	public int getBusinessId() {
+		return businessId;
 	}
 
-	public void setBusinessID(int businessID) {
-		this.businessID = businessID;
+	public void setBusinessId(int businessId) {
+		this.businessId = businessId;
 	}
 
-	public int getUserID() {
-		return userID;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public BigDecimal getScore() {

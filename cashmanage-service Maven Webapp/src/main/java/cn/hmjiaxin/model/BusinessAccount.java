@@ -21,7 +21,7 @@ public class BusinessAccount implements Serializable{
 	@Id
 	private int id;
 	@Column(name="business_id")
-	private int businessID;
+	private int businessId;
 	private BigDecimal score;
 	@Column(name = "media_score")
 	private BigDecimal mediaScore;
@@ -40,12 +40,12 @@ public class BusinessAccount implements Serializable{
 		this.id = id;
 	}
 
-	public int getBusinessID() {
-		return businessID;
+	public int getBusinessId() {
+		return businessId;
 	}
 
-	public void setBusinessID(int businessID) {
-		this.businessID = businessID;
+	public void setBusinessId(int businessId) {
+		this.businessId = businessId;
 	}
 
 	public BigDecimal getScore() {

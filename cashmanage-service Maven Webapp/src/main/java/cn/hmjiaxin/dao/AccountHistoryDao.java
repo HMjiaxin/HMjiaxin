@@ -13,11 +13,11 @@ import org.springframework.data.repository.CrudRepository;
 import cn.hmjiaxin.model.BusinessAccountHistory;
 
 public interface AccountHistoryDao extends CrudRepository<BusinessAccountHistory, Integer>{
-	List<BusinessAccountHistory> findByBusinessID(int businessID);
+	List<BusinessAccountHistory> findByBusinessId(int businessID);
 	
-	@Query("select h from BusinessAccountHistory h,BusinessAccount a where h.businessID=a.businessID ")//limit ?1,?2")
+	@Query("select h from BusinessAccountHistory h,BusinessAccount a where h.businessId=a.businessId ")//limit ?1,?2")
 	Page<BusinessAccountHistory> findAll(Pageable pageable);//,@Param("queryKey") String queryKey);
-	@Query("select count(h) from BusinessAccountHistory h,BusinessAccount a where h.businessID=a.businessID ")
+	@Query("select count(h) from BusinessAccountHistory h,BusinessAccount a where h.businessId=a.businessId ")
 	int queryCount();
 	
 	@Modifying 
