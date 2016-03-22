@@ -72,7 +72,7 @@ public class DrawCashApplyContraller {
 		int userid=0;
 		String decision="提现";
 		int state=1;
-		String ip="111.111.111.111";
+		String ip="";
 		accountHistoryService.insertAccountHistory(businessId,userid,drawCashScore,decision,state,ip);
 	}
 }

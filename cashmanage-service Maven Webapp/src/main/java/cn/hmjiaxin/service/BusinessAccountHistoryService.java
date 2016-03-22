@@ -37,7 +37,7 @@ public class BusinessAccountHistoryService {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
 		if (key == null || "".equals(key)) {
 			Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
-			Pageable pageable = new PageRequest(pageSize - 1, num,sort);
+			Pageable pageable = new PageRequest(pageSize, num,sort);
 			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
 					.findAll(pageable);
 			list = accountHistories.getContent();

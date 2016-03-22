@@ -47,64 +47,76 @@ public class DrawCashController {
 	 */
 	@RequestMapping("/drawcashlist")
 	public void drawCashList(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam("draw") String pageSizeStr) throws IOException {
+			HttpServletResponse response, @RequestParam("draw") String draw,
+			@RequestParam("start") int start, @RequestParam("length") int length)
+			throws IOException {
 		System.out.println(request.getRequestURL().toString());
-		System.out.println(pageSizeStr);
-		System.out.println(pageSizeStr+"___________________");
+		String jsonCallback = request.getParameter("callback");
+		System.out.println(jsonCallback);
+		System.out.println(draw);
+		System.out.println(start + "___________________");
+		System.out.println(length);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
-		if (pageSizeStr == null || "".equals(pageSizeStr)) {
-			pageSize = 1;
-		} else {
-			pageSize = Integer.parseInt(pageSizeStr);
+		if (length != 0) {
+			pageSize = start / length;
 		}
-		int num = 10;
 		String key = "";
 		List<BusinessAccountHistory> list = accountHistoryService.queryAll(
-				pageSize, num, key);
+				pageSize, length, key);
 		int totalCount = accountHistoryService.queryCount();
-		Map<String, Object> map=new HashMap<String, Object>();
-		map.put("draw", pageSizeStr);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("draw", draw);
 		map.put("recordsTotal", totalCount);
 		map.put("recordsFiltered", totalCount);
-		List<List<String>> result = new ArrayList<List<String>>();
+		List<Map<String, String> > result = new ArrayList<Map<String, String> >();
 		if (list.size() > 0) {
 			for (BusinessAccountHistory bah : list) {
 				int businessId = bah.getBusinessId();
 				BusinessAccount account = accountService
 						.findAccountById(businessId);
-				List<String> elementList = new ArrayList<String>();
-				elementList.add(bah.getId() + "");
-				elementList.add(businessId + "");
-				elementList.add(account.getScore() + "");
-				elementList.add(bah.getScore().toString());
-				elementList.add(bah.getStatus() + "");
-				elementList.add(sdf.format(bah.getCreatedDate()));
-				elementList.add(sdf.format(bah.getLastUpdatedDate()));
-				result.add(elementList);
+				// List<String> elementList = new ArrayList<String>();
+				Map<String, String> elementMap = new HashMap<String, String>();
+				elementMap.put("businessName", "企业名称");
+				elementMap.put("weChat", "微信名称");
+				elementMap.put("id", "企业名称");
+				elementMap.put("businessName", bah.getId()+"");
+				elementMap.put("businessId", businessId+"");
+				elementMap.put("score", account.getScore()+"");
+				elementMap.put("drawCashScore", bah.getStatus() + "");
+				elementMap.put("status", bah.getStatus() + "");
+				Date createDate = bah.getCreatedDate();
+				if (createDate == null) {
+					elementMap.put("createDate","");
+				} else {
+					elementMap.put("createDate",sdf.format(bah.getCreatedDate()));
+				}
+				elementMap.put("lastUpdatedDate",sdf.format(bah.getLastUpdatedDate()));
+				result.add(elementMap);
 			}
 		}
 		map.put("data", result);
-		String res=JSONArray.fromObject(map).toString();
-		res=res.substring(1,res.length()-1);
-		System.out.println(res);
-		response.getWriter().print(res);
+		String res = JSONArray.fromObject(map).toString();
+		res = res.substring(1, res.length() - 1);
+		System.out.println(jsonCallback + "(" + res + ")");
+		response.getWriter().print(jsonCallback + "(" + res + ")");
 	}
 
 	@RequestMapping("/updateStatus")
-	public void updateState(@RequestParam("status") int changeStatus,
-			@RequestParam("id") int businessId,
-			HttpServletResponse response) throws IOException {
+	public void updateStatus(@RequestParam("status") int changeStatus,
+			@RequestParam("id") int id, HttpServletResponse response,HttpServletRequest request)
+			throws IOException {
+		System.out.println("+++++++++++++++");
+		System.out.println(request.getRequestURL().toString());
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		boolean result = accountHistoryService.updateStatus(changeStatus,
-				businessId);
+				id);
 		if (result) {
 			response.getWriter().print("修改成功");
-		}else{
+		} else {
 			response.getWriter().print("修改失败");
 		}
 	}
