@@ -59,4 +59,20 @@ public class DrawCashApplyContraller {
 		BigDecimal score=accountService.getScoreByBessinessId(businessId);
 		response.getWriter().print(score);
 	}
+	
+	@RequestMapping("/drawcashapply")
+	public void drawCashApply(HttpServletRequest request,
+			HttpServletResponse response,@RequestParam("drawCashScore")BigDecimal drawCashScore){
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+		int businessId ;//= (Integer) session.getAttribute("");
+		businessId = 10001;
+		System.out.println("提现");
+		int userid=0;
+		String decision="提现";
+		int state=1;
+		String ip="111.111.111.111";
+		accountHistoryService.insertAccountHistory(businessId,userid,drawCashScore,decision,state,ip);
+	}
 }

@@ -1,7 +1,9 @@
 package cn.hmjiaxin.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.SqlResultSetMapping;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;

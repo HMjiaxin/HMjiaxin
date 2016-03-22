@@ -49,7 +49,8 @@ public class DrawCashController {
 	public void drawCashList(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("draw") String pageSizeStr) throws IOException {
-		System.out.println("触发");
+		System.out.println(request.getRequestURL().toString());
+		System.out.println(pageSizeStr);
 		System.out.println(pageSizeStr+"___________________");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
@@ -87,7 +88,10 @@ public class DrawCashController {
 			}
 		}
 		map.put("data", result);
-		response.getWriter().print(JSONArray.fromObject(map).toString());
+		String res=JSONArray.fromObject(map).toString();
+		res=res.substring(1,res.length()-1);
+		System.out.println(res);
+		response.getWriter().print(res);
 	}
 
 	@RequestMapping("/updateStatus")
