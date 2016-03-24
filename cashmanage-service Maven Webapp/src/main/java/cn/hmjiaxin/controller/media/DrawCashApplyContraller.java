@@ -51,9 +51,8 @@ public class DrawCashApplyContraller {
 	}
 
 	@RequestMapping("/getscore")
-	public void getAccount(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {// @RequestParam("businessid")String
-											// businessid){
+	public void getScore(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		HttpSession session = request.getSession();
