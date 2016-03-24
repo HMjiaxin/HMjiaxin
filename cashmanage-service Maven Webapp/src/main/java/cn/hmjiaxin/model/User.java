@@ -7,80 +7,36 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "t_business_user")
+@Table(name = "qa_shared_user")
 public class User {
 
 	@Id
+	@NotNull
 	private int id;
-	@Column(name = "user_phone")
-	private String userPhone;
-	@Column(name = "user_email")
-	private String userEmail;
-	@Column(name = "user_qq")
-	private String userQQ;
+	@Column(name = "first_name")
+	private String firstName;
+	@Column(name = "last_name")
+	private String lastName;
+	@Column(name = "phone")
+	private String phone;
 	@NotNull
-	@Column(name = "user_name")
-	private String userName;
+	@Column(name = "password_hash")
+	private String passwordHash;
 	@NotNull
-	@Column(name = "user_password")
-	private String userPassword;
+	@Column(name = "password_secret")
+	private String passwordSecret;
 	@Column(name = "user_type")
 	private String userType;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getUserPassword() {
-		return userPassword;
-	}
-
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
-
-	public String getUserPhone() {
-		return userPhone;
-	}
-
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
-	}
-
-	public String getUserEmail() {
-		return userEmail;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
-
-	public String getUserQQ() {
-		return userQQ;
-	}
-
-	public void setUserQQ(String userQQ) {
-		this.userQQ = userQQ;
-	}
-
-	public String getUserType() {
-		return userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
+	@Column(name = "is_verified")
+	private String isVerified;
+	@Column(name = "channel")
+	private String channel;
+	@Column(name = "created_by")
+	private String createdBy;
+	@Column(name = "created_date")
+	private String createdDate;
+	@Column(name = "last_updated_date")
+	@NotNull
+	private String lastUpdatedDate;
 
 }
