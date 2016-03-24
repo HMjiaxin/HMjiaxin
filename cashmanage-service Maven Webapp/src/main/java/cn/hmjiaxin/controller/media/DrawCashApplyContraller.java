@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hmjiaxin.model.BusinessAccountHistory;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
-
+/**
+ * 媒体主提现管理
+ * @author rabbit
+ *
+ */
 @RestController
 public class DrawCashApplyContraller {
 	private BusinessAccountHistoryService accountHistoryService;
@@ -43,7 +47,6 @@ public class DrawCashApplyContraller {
 		businessId = 10001;
 		List<BusinessAccountHistory> list = accountHistoryService
 				.findBybusinessId(businessId);
-		// System.out.println();
 		response.getWriter().print(JSONArray.fromObject(list));
 	}
 

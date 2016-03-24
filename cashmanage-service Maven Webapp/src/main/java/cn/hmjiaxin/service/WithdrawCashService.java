@@ -30,7 +30,7 @@ public class WithdrawCashService {
 		this.accountHistoryDao = accountHistoryDao;
 	}
 
-	public List<BusinessAccountHistory> queryAllWithdrawCashList(int pageSize, int num,
+	public List<BusinessAccountHistory> queryAllDrawCashList(int pageSize, int num,
 			String key) {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
 //		int count = (int) accountHistoryDao.count();
@@ -38,7 +38,7 @@ public class WithdrawCashService {
 			Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
 			Pageable pageable = new PageRequest(pageSize - 1, num,sort);
 			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
-					.findAll(pageable);
+					.queryDrawCashHistory(pageable);
 			list = accountHistories.getContent();
 			System.out.println("查询结果"+list.size());
 		} else {

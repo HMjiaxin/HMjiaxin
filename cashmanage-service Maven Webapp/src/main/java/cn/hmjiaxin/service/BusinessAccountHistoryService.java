@@ -32,24 +32,31 @@ public class BusinessAccountHistoryService {
 		this.jdbcTemplate=jdbcTemplate;
 	}
 
-	public List<BusinessAccountHistory> queryAll(int pageSize, int num,
+	public List<BusinessAccountHistory> queryAllDrawCashHistory(int pageSize, int num,
 			String key) {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
+		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
+		Pageable pageable = new PageRequest(pageSize, num,sort);
 		if (key == null || "".equals(key)) {
-			Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
-			Pageable pageable = new PageRequest(pageSize, num,sort);
 			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
-					.findAll(pageable);
+					.queryDrawCashHistory(pageable);
 			list = accountHistories.getContent();
 			System.out.println("查询结果"+list.size());
 		} else {
-
+			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
+					.queryDrawCashHistoryByKey(Integer.parseInt(key),pageable);
+			list = accountHistories.getContent();
+			System.out.println("结果："+list.size());
 		}
 		return list;
 	}
 
-	public int queryCount() {
-		return accountHistoryDao.queryCount();
+	public int queryDrawCashHistoryCount(String keyword) {
+		if(keyword==null||"".equals(keyword)){
+			return accountHistoryDao.queryDrawCashHistoryCount();
+		}else{
+			return accountHistoryDao.queryDrawCashHistoryCount(Integer.parseInt(keyword));
+		}
 	}
 
 	public boolean updateStatus(int changeStatus, int id) {

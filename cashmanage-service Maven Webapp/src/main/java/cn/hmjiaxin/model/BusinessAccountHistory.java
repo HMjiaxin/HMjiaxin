@@ -41,7 +41,6 @@ public class BusinessAccountHistory implements Serializable{
 	@Column(name = "last_updated_date")
 	private Date lastUpdatedDate;
 
-	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public int getId() {
 		return id;
 	}

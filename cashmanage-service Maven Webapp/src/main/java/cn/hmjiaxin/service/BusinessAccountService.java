@@ -28,5 +28,15 @@ public class BusinessAccountService {
 		
 		return null;
 	}
+	/**
+	 * 查询广告主账户
+	 * @param userName
+	 * @return
+	 */
+	public List<BusinessAccount> queryAllAdvertisers(String userName) {
+		// TODO Auto-generated method stub
+//		List<BusinessAccount> list=accountDao.findAll();
+		return null;
+	}
 
 }

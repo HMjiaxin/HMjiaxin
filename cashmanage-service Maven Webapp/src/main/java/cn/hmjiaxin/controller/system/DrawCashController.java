@@ -1,4 +1,4 @@
-package cn.hmjiaxin.controller.ad;
+package cn.hmjiaxin.controller.system;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,7 +24,11 @@ import cn.hmjiaxin.model.BusinessAccountHistory;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
 import cn.hmjiaxin.service.WithdrawCashService;
-
+/**
+ * 管理员提现管理
+ * @author rabbit
+ *
+ */
 @RestController
 public class DrawCashController {
 
@@ -42,20 +46,22 @@ public class DrawCashController {
 
 	/**
 	 * 查询提现纪录
-	 * 
+	 * @param draw 请求次数
+	 * @param start 开始位置
+	 * @param length 长度
+	 * @param keyWord 关键字
 	 * @throws IOException
 	 */
 	@RequestMapping("/drawcashlist")
 	public void drawCashList(HttpServletRequest request,
 			HttpServletResponse response, @RequestParam("draw") String draw,
-			@RequestParam("start") int start, @RequestParam("length") int length)
+			@RequestParam("start") int start,
+			@RequestParam("length") int length,
+			@RequestParam("keyword") String keyword)
 			throws IOException {
+		System.out.println(keyword);
 		System.out.println(request.getRequestURL().toString());
 		String jsonCallback = request.getParameter("callback");
-		System.out.println(jsonCallback);
-		System.out.println(draw);
-		System.out.println(start + "___________________");
-		System.out.println(length);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -63,15 +69,14 @@ public class DrawCashController {
 		if (length != 0) {
 			pageSize = start / length;
 		}
-		String key = "";
-		List<BusinessAccountHistory> list = accountHistoryService.queryAll(
-				pageSize, length, key);
-		int totalCount = accountHistoryService.queryCount();
+		List<BusinessAccountHistory> list = accountHistoryService.queryAllDrawCashHistory(
+				pageSize, length, keyword);
+		int totalCount = accountHistoryService.queryDrawCashHistoryCount(keyword);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("draw", draw);
 		map.put("recordsTotal", totalCount);
 		map.put("recordsFiltered", totalCount);
-		List<Map<String, String> > result = new ArrayList<Map<String, String> >();
+		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		if (list.size() > 0) {
 			for (BusinessAccountHistory bah : list) {
 				int businessId = bah.getBusinessId();
@@ -81,19 +86,21 @@ public class DrawCashController {
 				Map<String, String> elementMap = new HashMap<String, String>();
 				elementMap.put("businessName", "企业名称");
 				elementMap.put("weChat", "微信名称");
-				elementMap.put("id", "企业名称");
-				elementMap.put("businessName", bah.getId()+"");
-				elementMap.put("businessId", businessId+"");
-				elementMap.put("score", account.getScore()+"");
+				elementMap.put("id", bah.getId() + "");
+				// elementMap.put("businessName", bah.getId()+"");
+				elementMap.put("businessId", businessId + "");
+				elementMap.put("score", account.getScore() + "");
 				elementMap.put("drawCashScore", bah.getStatus() + "");
 				elementMap.put("status", bah.getStatus() + "");
 				Date createDate = bah.getCreatedDate();
 				if (createDate == null) {
-					elementMap.put("createDate","");
+					elementMap.put("createDate", "");
 				} else {
-					elementMap.put("createDate",sdf.format(bah.getCreatedDate()));
+					elementMap.put("createDate",
+							sdf.format(bah.getCreatedDate()));
 				}
-				elementMap.put("lastUpdatedDate",sdf.format(bah.getLastUpdatedDate()));
+				elementMap.put("lastUpdatedDate",
+						sdf.format(bah.getLastUpdatedDate()));
 				result.add(elementMap);
 			}
 		}
@@ -106,18 +113,12 @@ public class DrawCashController {
 
 	@RequestMapping("/updateStatus")
 	public void updateStatus(@RequestParam("status") int changeStatus,
-			@RequestParam("id") int id, HttpServletResponse response,HttpServletRequest request)
-			throws IOException {
-		System.out.println("+++++++++++++++");
-		System.out.println(request.getRequestURL().toString());
+			@RequestParam("id") int id, HttpServletResponse response,
+			HttpServletRequest request) throws IOException {
+		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
-		boolean result = accountHistoryService.updateStatus(changeStatus,
-				id);
-		if (result) {
-			response.getWriter().print("修改成功");
-		} else {
-			response.getWriter().print("修改失败");
-		}
+		boolean result = accountHistoryService.updateStatus(changeStatus, id);
+		response.getWriter().print(jsonCallback+"("+result+")");
 	}
 }
