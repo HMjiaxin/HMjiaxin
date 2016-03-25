@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.sun.jmx.snmp.Timestamp;
@@ -20,8 +22,9 @@ public class BusinessAccount implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	private int id;
-	@Column(name="business_id")
-	private int businessId;
+	@OneToOne
+	@JoinColumn(name="business_id")
+	private Business business;
 	private BigDecimal score;
 	@Column(name = "media_score")
 	private BigDecimal mediaScore;
@@ -31,61 +34,48 @@ public class BusinessAccount implements Serializable{
 	private Date createdDate;
 	@Column(name = "last_updated_date")
 	private Date lastUpdatedDate;
-
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public int getBusinessId() {
-		return businessId;
+	public Business getBusiness() {
+		return business;
 	}
-
-	public void setBusinessId(int businessId) {
-		this.businessId = businessId;
+	public void setBusiness(Business business) {
+		this.business = business;
 	}
-
 	public BigDecimal getScore() {
 		return score;
 	}
-
 	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
-
 	public BigDecimal getMediaScore() {
 		return mediaScore;
 	}
-
-	public void setMedia_score(BigDecimal mediaScore) {
+	public void setMediaScore(BigDecimal mediaScore) {
 		this.mediaScore = mediaScore;
 	}
-
 	public BigDecimal getAdScore() {
 		return adScore;
 	}
-
 	public void setAdScore(BigDecimal adScore) {
 		this.adScore = adScore;
 	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
-
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-
 	public Date getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
-
 	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
 
+	
 }

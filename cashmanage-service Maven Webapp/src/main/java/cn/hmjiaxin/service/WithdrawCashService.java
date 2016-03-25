@@ -34,16 +34,15 @@ public class WithdrawCashService {
 			String key) {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
 //		int count = (int) accountHistoryDao.count();
-		if (key == null || "".equals(key)) {
-			Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
-			Pageable pageable = new PageRequest(pageSize - 1, num,sort);
-			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
-					.queryDrawCashHistory(pageable);
-			list = accountHistories.getContent();
-			System.out.println("查询结果"+list.size());
-		} else {
-
+		if (key == null) {
+			key="";
 		}
+		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
+		Pageable pageable = new PageRequest(pageSize - 1, num,sort);
+		Page<BusinessAccountHistory> accountHistories = accountHistoryDao
+				.queryDrawCashHistory(key,pageable);
+		list = accountHistories.getContent();
+		System.out.println("查询结果"+list.size());
 		return list;
 	}
 

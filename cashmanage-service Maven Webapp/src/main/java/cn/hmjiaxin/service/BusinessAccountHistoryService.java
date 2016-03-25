@@ -37,26 +37,21 @@ public class BusinessAccountHistoryService {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
 		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
 		Pageable pageable = new PageRequest(pageSize, num,sort);
-		if (key == null || "".equals(key)) {
-			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
-					.queryDrawCashHistory(pageable);
-			list = accountHistories.getContent();
-			System.out.println("查询结果"+list.size());
-		} else {
-			Page<BusinessAccountHistory> accountHistories = accountHistoryDao
-					.queryDrawCashHistoryByKey(Integer.parseInt(key),pageable);
-			list = accountHistories.getContent();
-			System.out.println("结果："+list.size());
+		if (key == null) {
+			key="";
 		}
+		Page<BusinessAccountHistory> accountHistories = accountHistoryDao
+				.queryDrawCashHistory(key,pageable);
+		list = accountHistories.getContent();
 		return list;
 	}
 
 	public int queryDrawCashHistoryCount(String keyword) {
-		if(keyword==null||"".equals(keyword)){
-			return accountHistoryDao.queryDrawCashHistoryCount();
-		}else{
-			return accountHistoryDao.queryDrawCashHistoryCount(Integer.parseInt(keyword));
+		if(keyword==null){
+			keyword="";
 		}
+			return accountHistoryDao.queryDrawCashHistoryCount(keyword);
+		
 	}
 
 	public boolean updateStatus(int changeStatus, int id) {
@@ -76,13 +71,12 @@ public class BusinessAccountHistoryService {
 
 	public List<BusinessAccountHistory> findBybusinessId(int businessId) {
 		return accountHistoryDao.findByBusinessId(businessId);
-//		return null;
 	}
 
 	public void insertAccountHistory(final int businessId, final int userid,
 			final BigDecimal drawCashScore, final String decision, final int state, final String ip) {
 		String sql="call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
-		this.jdbcTemplate.execute(sql,new CallableStatementCallback(){
+		jdbcTemplate.execute(sql,new CallableStatementCallback(){
 
 			public Object doInCallableStatement(CallableStatement cs)
 					throws SQLException, DataAccessException {
@@ -96,14 +90,18 @@ public class BusinessAccountHistoryService {
 				return true;
 			}
 		});    
-		/*jdbcTemplate.execute(new CallableStatementCreator() {
-			
-			public CallableStatement createCallableStatement(Connection arg0)
-					throws SQLException {
-				
-				
-			}
-		});*/
+//		return false;
+	}
+
+	public List<BusinessAccountHistory> queryByBusinessId(int pageSize,int length,int businessId) {
+		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
+		Pageable pageable = new PageRequest(pageSize, length,sort);
+		return accountHistoryDao.queryByBusinessIdAndDescription(businessId,"企业客户充值",pageable);
+	}
+
+	public int queryRechargeCouunt(int businessId) {
+		// TODO Auto-generated method stub
+		return accountHistoryDao.queryRechargeCouunt(businessId);
 	}
 
 }

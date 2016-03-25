@@ -19,37 +19,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.hmjiaxin.model.Business;
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.BusinessAccountHistory;
+import cn.hmjiaxin.model.SocialConnection;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
+import cn.hmjiaxin.service.BusinessService;
+import cn.hmjiaxin.service.SocialConnectionService;
 import cn.hmjiaxin.service.WithdrawCashService;
+
 /**
  * 管理员提现管理
+ * 
  * @author rabbit
  *
  */
 @RestController
 public class DrawCashController {
 
-	private static final HashMap String = null;
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
+	private BusinessService businessService;
+	private SocialConnectionService socialConnectionService;
 
 	@Autowired
 	public DrawCashController(BusinessAccountService accountService,
-			BusinessAccountHistoryService accountHistoryService) {
+			BusinessAccountHistoryService accountHistoryService,
+			BusinessService businessService,SocialConnectionService socialConnectionService) {
 		super();
 		this.accountHistoryService = accountHistoryService;
 		this.accountService = accountService;
+		this.businessService = businessService;
+		this.socialConnectionService=socialConnectionService;
 	}
 
 	/**
 	 * 查询提现纪录
-	 * @param draw 请求次数
-	 * @param start 开始位置
-	 * @param length 长度
-	 * @param keyWord 关键字
+	 * 
+	 * @param draw
+	 *            请求次数
+	 * @param start
+	 *            开始位置
+	 * @param length
+	 *            长度
+	 * @param keyWord
+	 *            关键字
 	 * @throws IOException
 	 */
 	@RequestMapping("/drawcashlist")
@@ -59,8 +74,6 @@ public class DrawCashController {
 			@RequestParam("length") int length,
 			@RequestParam("keyword") String keyword)
 			throws IOException {
-		System.out.println(keyword);
-		System.out.println(request.getRequestURL().toString());
 		String jsonCallback = request.getParameter("callback");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
@@ -79,15 +92,20 @@ public class DrawCashController {
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		if (list.size() > 0) {
 			for (BusinessAccountHistory bah : list) {
-				int businessId = bah.getBusinessId();
+				Business business=bah.getBusiness();
+				int businessId=business.getId();
 				BusinessAccount account = accountService
 						.findAccountById(businessId);
-				// List<String> elementList = new ArrayList<String>();
+				List<SocialConnection> scList=socialConnectionService.findByBusinessId(businessId);
+				String sc="";
+				for(SocialConnection sConnection:scList){
+					sc+=sConnection.getSocialProfileName()+",";
+				}
 				Map<String, String> elementMap = new HashMap<String, String>();
-				elementMap.put("businessName", "企业名称");
-				elementMap.put("weChat", "微信名称");
+				elementMap.put("businessName", business.getName());
+				elementMap.put("weChat", sc.substring(0,sc.length()-1));
 				elementMap.put("id", bah.getId() + "");
-				// elementMap.put("businessName", bah.getId()+"");
+				elementMap.put("contactPerson", business.getContactPerson());
 				elementMap.put("businessId", businessId + "");
 				elementMap.put("score", account.getScore() + "");
 				elementMap.put("drawCashScore", bah.getStatus() + "");
@@ -119,6 +137,6 @@ public class DrawCashController {
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		boolean result = accountHistoryService.updateStatus(changeStatus, id);
-		response.getWriter().print(jsonCallback+"("+result+")");
+		response.getWriter().print(jsonCallback + "(" + result + ")");
 	}
 }

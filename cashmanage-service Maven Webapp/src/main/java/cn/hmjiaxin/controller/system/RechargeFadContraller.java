@@ -18,12 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.hmjiaxin.model.Business;
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.BusinessAccountHistory;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
+import cn.hmjiaxin.service.BusinessService;
+
 /**
  * 管理员充值管理
+ * 
  * @author rabbit
  *
  */
@@ -31,21 +35,30 @@ import cn.hmjiaxin.service.BusinessAccountService;
 public class RechargeFadContraller {
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
+	private BusinessService businessService;
+
 	@Autowired
 	public RechargeFadContraller(
 			BusinessAccountHistoryService accountHistoryService,
-			BusinessAccountService accountService) {
+			BusinessAccountService accountService,
+			BusinessService businessService) {
 		super();
 		this.accountHistoryService = accountHistoryService;
 		this.accountService = accountService;
+		this.businessService = businessService;
 	}
-	
+
 	/**
-	 * 用户列表
-	 * @param draw 请求次数
-	 * @param start 开始位置
-	 * @param length 长度
-	 * @param userName 用户名
+	 * 充值用户列表
+	 * 
+	 * @param draw
+	 *            请求次数
+	 * @param start
+	 *            开始位置
+	 * @param length
+	 *            长度
+	 * @param userName
+	 *            用户名
 	 * @throws IOException
 	 */
 	@RequestMapping("/rechargelist")
@@ -53,8 +66,7 @@ public class RechargeFadContraller {
 			HttpServletResponse response, @RequestParam("draw") String draw,
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
-			@RequestParam("userName") String userName)
-			throws IOException {
+			@RequestParam("userName") String userName) throws IOException {
 		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -62,21 +74,83 @@ public class RechargeFadContraller {
 		if (length != 0) {
 			pageSize = start / length;
 		}
-		List<BusinessAccount>list=accountService.queryAllAdvertisers(userName);
-//		List<BusinessAccount>list=accountService.quertAllRechargeHistory(pageSize, length, userName);
-//		List<BusinessAccountHistory> list = accountHistoryService.queryAll(
-//				pageSize, length, userName);
-//		int totalCount = accountHistoryService.queryCount(userName);
+		List<BusinessAccount> list = accountService.queryAllAdvertisers(
+				pageSize, length, userName);// 查询出所有的广告主账号
+		int totalCount = accountService.queryAdvertiserCouunt(userName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("draw", draw);
-//		map.put("recordsTotal", totalCount);
-//		map.put("recordsFiltered", totalCount);
+		map.put("recordsTotal", totalCount);
+		map.put("recordsFiltered", totalCount);
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-		if (list.size() > 0) {}
+		if (list.size() > 0) {
+			for (BusinessAccount ba : list) {
+				Map<String, String> elementMap = new HashMap<String, String>();
+
+				elementMap.put("businessName", ba.getBusiness().getName());
+				elementMap.put("contactPerson", ba.getBusiness()
+						.getContactPerson());
+				elementMap.put("score", ba.getScore() + "");
+				// elementMap.put("", value);
+				result.add(elementMap);
+			}
+		}
 		map.put("data", result);
 		String res = JSONArray.fromObject(map).toString();
 		res = res.substring(1, res.length() - 1);
-		System.out.println(jsonCallback + "(" + res + ")");
 		response.getWriter().print(jsonCallback + "(" + res + ")");
+	}
+
+	/**
+	 * 展示账户历史纪录
+	 * @throws IOException 
+	 */
+	@RequestMapping("/rechargehistorylist")
+	public void showAccountHistory(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam("draw") String draw,
+			@RequestParam("start") int start,
+			@RequestParam("length") int length,
+			@RequestParam("businessId") int businessId) throws IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String jsonCallback = request.getParameter("callback");
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		int pageSize = 0;
+		if (length != 0) {
+			pageSize = start / length;
+		}
+		List<BusinessAccountHistory> list = accountHistoryService
+				.queryByBusinessId(pageSize, length, businessId);
+		int totalCount = accountHistoryService.queryRechargeCouunt(businessId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("draw", draw);
+		map.put("recordsTotal", totalCount);
+		map.put("recordsFiltered", totalCount);
+		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+		if (list.size() > 0) {
+			for (BusinessAccountHistory bah : list) {
+				Map<String, String> elementMap = new HashMap<String, String>();
+
+				elementMap.put("businessName", bah.getBusiness().getName());
+				elementMap.put("description", bah.getDescription());
+				elementMap.put("score", bah.getScore() + "");
+				Date createDate = bah.getCreatedDate();
+				if (createDate == null) {
+					elementMap.put("createDate", "");
+				} else {
+					elementMap.put("createDate", bah.getCreatedDate() + "");
+				}
+				// elementMap.put("", value);
+				result.add(elementMap);
+			}
+		}
+		map.put("data", result);
+		String res = JSONArray.fromObject(map).toString();
+		res = res.substring(1, res.length() - 1);
+		response.getWriter().print(jsonCallback + "(" + res + ")");
+	}
+	
+	@RequestMapping("")
+	public void recharge(@RequestParam("businessId")int businessId){
+//		accountService.recharge(businessId);
 	}
 }

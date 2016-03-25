@@ -5,10 +5,14 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.sun.jmx.snmp.Timestamp;
@@ -24,8 +28,10 @@ public class BusinessAccountHistory implements Serializable{
 	@Id
 	@GeneratedValue
 	private int id;
-	@Column(name = "business_id")
-	private int businessId;
+	//@Column(name = "business_id")
+	@ManyToOne(cascade=CascadeType.REFRESH,optional=false)
+	@JoinColumn(name="business_id")
+	private Business business;
 	@Column(name = "user_id")
 	private int userId;
 	@Column(name = "score")
@@ -40,78 +46,63 @@ public class BusinessAccountHistory implements Serializable{
 	private Date createdDate;
 	@Column(name = "last_updated_date")
 	private Date lastUpdatedDate;
-
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public int getBusinessId() {
-		return businessId;
+	public Business getBusiness() {
+		return business;
 	}
-
-	public void setBusinessId(int businessId) {
-		this.businessId = businessId;
+	public void setBusiness(Business business) {
+		this.business = business;
 	}
-
 	public int getUserId() {
 		return userId;
 	}
-
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-
 	public BigDecimal getScore() {
 		return score;
 	}
-
 	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
-
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 	public int getStatus() {
 		return status;
 	}
-
 	public void setStatus(int status) {
 		this.status = status;
 	}
-
 	public String getIp() {
 		return ip;
 	}
-
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
-
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-
 	public Date getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
-
 	public void setLastUpdatedDate(Date lastUpdatedDate) {
-//		lastUpdatedDate=lastUpdatedDate.;
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
+	
 }
