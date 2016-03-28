@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hmjiaxin.model.Business;
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.BusinessAccountHistory;
+import cn.hmjiaxin.model.ReturnResult;
 import cn.hmjiaxin.model.SocialConnection;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
 import cn.hmjiaxin.service.BusinessService;
 import cn.hmjiaxin.service.SocialConnectionService;
 import cn.hmjiaxin.service.WithdrawCashService;
+import cn.hmjiaxin.util.StringUtil;
 
 /**
  * 管理员提现管理
@@ -40,17 +42,15 @@ public class DrawCashController {
 
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
-	private BusinessService businessService;
 	private SocialConnectionService socialConnectionService;
 
 	@Autowired
 	public DrawCashController(BusinessAccountService accountService,
 			BusinessAccountHistoryService accountHistoryService,
-			BusinessService businessService,SocialConnectionService socialConnectionService) {
+			SocialConnectionService socialConnectionService) {
 		super();
 		this.accountHistoryService = accountHistoryService;
 		this.accountService = accountService;
-		this.businessService = businessService;
 		this.socialConnectionService=socialConnectionService;
 	}
 
@@ -74,7 +74,6 @@ public class DrawCashController {
 			@RequestParam("length") int length,
 			@RequestParam("keyword") String keyword)
 			throws IOException {
-		String jsonCallback = request.getParameter("callback");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -123,20 +122,18 @@ public class DrawCashController {
 			}
 		}
 		map.put("data", result);
-		String res = JSONArray.fromObject(map).toString();
-		res = res.substring(1, res.length() - 1);
-		System.out.println(jsonCallback + "(" + res + ")");
-		response.getWriter().print(jsonCallback + "(" + res + ")");
+		String returnStr=StringUtil.JSONCallBackUrl(request, map);
+		response.getWriter().print(returnStr);
 	}
 
 	@RequestMapping("/updateStatus")
 	public void updateStatus(@RequestParam("status") int changeStatus,
 			@RequestParam("id") int id, HttpServletResponse response,
 			HttpServletRequest request) throws IOException {
-		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		boolean result = accountHistoryService.updateStatus(changeStatus, id);
-		response.getWriter().print(jsonCallback + "(" + result + ")");
+		ReturnResult rr=new ReturnResult(result?1:0, "修改成功");
+		response.getWriter().print(StringUtil.JSONCallBackUrl(request, rr));
 	}
 }

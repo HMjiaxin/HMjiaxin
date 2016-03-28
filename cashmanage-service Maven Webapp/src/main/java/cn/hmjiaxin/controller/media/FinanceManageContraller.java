@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hmjiaxin.model.BusinessAccountHistory;
+import cn.hmjiaxin.model.ReturnResult;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
+import cn.hmjiaxin.util.StringUtil;
 
 /**
  * 媒体住财务管理
@@ -71,7 +73,6 @@ public class FinanceManageContraller {
 		default:
 			break;
 		}
-		String jsonCallback = request.getParameter("callback");
 		int pageSize = 0;
 		if (length != 0) {
 			pageSize = start / length;
@@ -96,32 +97,24 @@ public class FinanceManageContraller {
 			}
 		}
 		map.put("data", result);
-		response.getWriter().print(
-				jsonCallback + "(" + JSONArray.fromObject(map) + ")");
+		response.getWriter().print(StringUtil.JSONCallBackUrl(request, map));
 
 	}
-	/**提现申请
-	 * @throws IOException */
-	@RequestMapping("/drawcashapply")
-	public void drawCashApply(HttpServletResponse response,@RequestParam("businessId")int businessId,@RequestParam("Score")BigDecimal Score) throws IOException{
-		boolean result=accountHistoryService.insertAccountHistory(businessId, 0, Score, "提现", 0, "");
-		response.getWriter().print(result);
-	}
+
 	/**
-	 * 获取账户余额
+	 * 提现申请
+	 * 
+	 * @throws IOException
 	 */
-	@RequestMapping("/getscore")
-	public void getScore(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		response.setCharacterEncoding("utf-8");
-		response.setHeader("Content-type", "text/html;charset=UTF-8");
-		HttpSession session = request.getSession();
-		int businessId = (Integer) session.getAttribute("");
-		businessId=Integer.parseInt(request.getParameter("businessId"));
-		if(businessId==0){
-			businessId = 10001;
-		}
-		BigDecimal score=accountService.getScoreByBessinessId(businessId);
-		response.getWriter().print(score);
+	@RequestMapping("/drawcashapply")
+	public void drawCashApply(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("businessId") int businessId,
+			@RequestParam("Score") BigDecimal Score) throws IOException {
+		boolean result = accountHistoryService.insertAccountHistory(businessId,
+				0, Score, "提现", 0, "");
+		ReturnResult rr = new ReturnResult(result ? 1 : 0, "申请成功");
+		response.getWriter().print(StringUtil.JSONCallBackUrl(request, rr));
 	}
+
 }

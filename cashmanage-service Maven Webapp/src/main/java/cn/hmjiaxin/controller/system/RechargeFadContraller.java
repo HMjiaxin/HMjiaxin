@@ -27,6 +27,7 @@ import cn.hmjiaxin.model.ReturnResult;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
 import cn.hmjiaxin.service.BusinessService;
+import cn.hmjiaxin.util.StringUtil;
 
 /**
  * 管理员充值管理
@@ -72,7 +73,6 @@ public class RechargeFadContraller {
 			@RequestParam("userName") String userName) throws IOException {
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
-		String jsonCallback = request.getParameter("callback");
 		int pageSize = 0;
 		if (length != 0) {
 			pageSize = start / length;
@@ -97,9 +97,8 @@ public class RechargeFadContraller {
 			}
 		}
 		map.put("data", result);
-		String res = JSONArray.fromObject(map).toString();
-		res = res.substring(1, res.length() - 1);
-		response.getWriter().print(jsonCallback + "(" + res + ")");
+		String returnStr=StringUtil.JSONCallBackUrl(request, map);
+		response.getWriter().print(returnStr);
 	}
 
 	/**
@@ -114,7 +113,6 @@ public class RechargeFadContraller {
 			@RequestParam("length") int length,
 			@RequestParam("businessId") int businessId) throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -146,24 +144,20 @@ public class RechargeFadContraller {
 			}
 		}
 		map.put("data", result);
-		String res = JSONArray.fromObject(map).toString();
-		res = res.substring(1, res.length() - 1);
-		response.getWriter().print(jsonCallback + "(" + res + ")");
+		String returnStr=StringUtil.JSONCallBackUrl(request, map);
+		response.getWriter().print(returnStr);
 	}
 
 	@RequestMapping("/recharge")
-//	@ResponseBody
 	public void recharge(HttpServletRequest request,HttpServletResponse response,
 			@RequestParam("businessId") int businessId,
 			@RequestParam("score") BigDecimal score) throws IOException {
-		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		boolean flag = accountService.saveAccount(businessId, 0, score,
 				"企业客户充值");
 		ReturnResult rr=new ReturnResult(flag?1:0,"成功");
-		response.getWriter().print(jsonCallback+"("+JSONArray.fromObject(rr).toString()+")");
-//		return jsonCallback+"("+rr+")";
+		response.getWriter().print(StringUtil.JSONCallBackUrl(request, rr));
 	}
 
 }

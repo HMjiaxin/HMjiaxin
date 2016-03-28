@@ -33,11 +33,10 @@ public class BusinessAccountService {
 		return ba;
 	}
 
-	public BigDecimal getScoreByBessinessId(int businessID) {
-		BusinessAccount ba= accountDao.findByBusinessId(businessID);
+	public BigDecimal getScoreByBessinessId(int businessId) {
+		BusinessAccount ba= accountDao.findByBusinessId(businessId);
 		BigDecimal score=ba.getScore();
-		
-		return null;
+		return score;
 	}
 	/**
 	 * 查询广告主账户
