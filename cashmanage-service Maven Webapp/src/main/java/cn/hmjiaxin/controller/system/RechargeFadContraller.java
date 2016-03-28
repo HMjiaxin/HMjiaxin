@@ -49,7 +49,7 @@ public class RechargeFadContraller {
 	}
 
 	/**
-	 * 充值用户列表
+	 * 广告主用户列表
 	 * 
 	 * @param draw
 	 *            请求次数
@@ -67,9 +67,9 @@ public class RechargeFadContraller {
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
 			@RequestParam("userName") String userName) throws IOException {
-		String jsonCallback = request.getParameter("callback");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		String jsonCallback = request.getParameter("callback");
 		int pageSize = 0;
 		if (length != 0) {
 			pageSize = start / length;
@@ -85,12 +85,11 @@ public class RechargeFadContraller {
 		if (list.size() > 0) {
 			for (BusinessAccount ba : list) {
 				Map<String, String> elementMap = new HashMap<String, String>();
-
+				elementMap.put("businessId", ba.getBusiness().getId()+"");
 				elementMap.put("businessName", ba.getBusiness().getName());
 				elementMap.put("contactPerson", ba.getBusiness()
 						.getContactPerson());
 				elementMap.put("score", ba.getScore() + "");
-				// elementMap.put("", value);
 				result.add(elementMap);
 			}
 		}
@@ -149,8 +148,7 @@ public class RechargeFadContraller {
 		response.getWriter().print(jsonCallback + "(" + res + ")");
 	}
 	
-	@RequestMapping("")
-	public void recharge(@RequestParam("businessId")int businessId){
-//		accountService.recharge(businessId);
-	}
+	@RequestMapping("/recharge")
+	public void recharge(@RequestParam("businessId")int businessId,@RequestParam("Score")int Score){
+		accountService.saveAccount(businessId, 0, Score, "企业客户充值");}
 }

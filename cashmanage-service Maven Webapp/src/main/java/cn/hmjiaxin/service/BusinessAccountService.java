@@ -47,7 +47,7 @@ public class BusinessAccountService {
 	public List<BusinessAccount> queryAllAdvertisers(int pageSize, int length,
 			String userName) {
 		List<BusinessAccount> accounts=new ArrayList<BusinessAccount>();
-		Sort sort=new Sort(Sort.DEFAULT_DIRECTION.DESC,"business.name");
+		Sort sort=new Sort(Sort.DEFAULT_DIRECTION.ASC,"business.name");
 		Pageable pageable=new PageRequest(pageSize, length, sort);
 		if(userName==null){
 			userName="";

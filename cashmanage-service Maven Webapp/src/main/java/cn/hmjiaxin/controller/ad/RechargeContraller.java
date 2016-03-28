@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
 /**
- * 广告主自充值
+ * 广告主自充值/调用支付宝、银行
  * @author wangchengang
  *
  */

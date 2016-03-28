@@ -31,7 +31,7 @@ public class BusinessAccountHistoryService {
 		this.accountHistoryDao = accountHistoryDao;
 		this.jdbcTemplate=jdbcTemplate;
 	}
-
+	/**提现记录*/
 	public List<BusinessAccountHistory> queryAllDrawCashHistory(int pageSize, int num,
 			String key) {
 		List<BusinessAccountHistory> list = new ArrayList<BusinessAccountHistory>();
@@ -45,7 +45,7 @@ public class BusinessAccountHistoryService {
 		list = accountHistories.getContent();
 		return list;
 	}
-
+	/**提现记录数*/
 	public int queryDrawCashHistoryCount(String keyword) {
 		if(keyword==null){
 			keyword="";
@@ -53,10 +53,9 @@ public class BusinessAccountHistoryService {
 			return accountHistoryDao.queryDrawCashHistoryCount(keyword);
 		
 	}
-
+	/**修改提现状态*/
 	public boolean updateStatus(int changeStatus, int id) {
 		BusinessAccountHistory bah=accountHistoryDao.findOne(id);
-		System.out.println(":::::"+bah);
 		if(bah==null){
 			return false;
 		}
@@ -68,11 +67,7 @@ public class BusinessAccountHistoryService {
 		accountHistoryDao.updateStatus(changeStatus,id);
 		return true;
 	}
-
-	public List<BusinessAccountHistory> findBybusinessId(int businessId) {
-		return accountHistoryDao.findByBusinessId(businessId);
-	}
-
+	/**一条新的提现申请*/
 	public void insertAccountHistory(final int businessId, final int userid,
 			final BigDecimal drawCashScore, final String decision, final int state, final String ip) {
 		String sql="call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
@@ -85,23 +80,35 @@ public class BusinessAccountHistoryService {
 				cs.setBigDecimal(3, drawCashScore);
 				cs.setString(4, decision);
 				cs.setInt(5, state);
-				cs.setString(6, ip);
+				cs.setString(6,ip);
 				cs.execute();
 				return true;
 			}
 		});    
 //		return false;
 	}
-
+	/**查询充值记录(单个用户)*/
 	public List<BusinessAccountHistory> queryByBusinessId(int pageSize,int length,int businessId) {
 		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
-		Pageable pageable = new PageRequest(pageSize, length,sort);
-		return accountHistoryDao.queryByBusinessIdAndDescription(businessId,"企业客户充值",pageable);
+		Pageable pageable = new PageRequest(pageSize,length,sort);
+		return accountHistoryDao.queryByBusinessIdAndDescriptionLike(businessId,"企业客户充值",pageable);
 	}
-
+	/**查询充值记录数(单个用户)*/
 	public int queryRechargeCouunt(int businessId) {
-		// TODO Auto-generated method stub
-		return accountHistoryDao.queryRechargeCouunt(businessId);
+		return accountHistoryDao.queryAccountHistoryCount(businessId, "企业客户充值");
+	} 
+
+
+	public List<BusinessAccountHistory> queryAccountHistory(int businessId,
+			int pageSize, int length, String description) {
+		Sort sort=new Sort(Sort.DEFAULT_DIRECTION.DESC,"createdDate");
+		Pageable pageable=new PageRequest(pageSize,length,sort);
+
+		return accountHistoryDao.queryByBusinessIdAndDescriptionLike(businessId,description, pageable);
+	}
+	public int queryAccountHistoryCount(int businessId, String description) {
+		int count=accountHistoryDao.queryAccountHistoryCount(businessId, description);
+		return count;
 	}
 
 }

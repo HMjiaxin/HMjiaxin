@@ -14,20 +14,23 @@ import cn.hmjiaxin.model.BusinessAccountHistory;
 public interface AccountHistoryDao extends CrudRepository<BusinessAccountHistory, Integer>{
 	List<BusinessAccountHistory> findByBusinessId(int businessID);
 	
-
-	@Query("select h from BusinessAccountHistory h,BusinessAccount a where h.business=a.business and h.business.isAds='0' and h.business.name like %?1%")
+	/**查询提现记录(所有账户)*/
+	@Query("select h from BusinessAccountHistory h,BusinessAccount a where h.business=a.business and h.business.isAds='0' and h.business.name like %?1% and h.description='提现'")
 	Page<BusinessAccountHistory> queryDrawCashHistory(String key, Pageable pageable);
-	@Query("select count(h) from BusinessAccountHistory h,BusinessAccount a where h.business=a.business and h.business.isAds='0' and h.business.name like %?1%")
+	/**查询提现数量(所有账户)*/
+	@Query("select count(h) from BusinessAccountHistory h,BusinessAccount a where h.business=a.business and h.business.isAds='0' and h.business.name like %?1%  and h.description='提现'")
 	int queryDrawCashHistoryCount(String keyword);
+	
+	/**更新提现状态*/
 	@Modifying 
 	@Transactional
 	@Query("update BusinessAccountHistory h set h.status= ?1 where h.id= ?2")
 	void updateStatus(int changeStatus, int id);
 
-
-	List<BusinessAccountHistory> queryByBusinessIdAndDescription(int businessId,String description,Pageable pageable);
-
-	@Query("select count(h)from BusinessAccountHistory h where h.business.id=?1")
-	int queryRechargeCouunt(int businessId);
-
+	/**查询账户历史纪录(单一账户)*/
+	@Query("select h from BusinessAccountHistory h where h.business.id=?1 and h.description like %?2%")
+	List<BusinessAccountHistory> queryByBusinessIdAndDescriptionLike(int businessId,String description,Pageable pageable);
+	/**查询账户历史纪录数(单一账户)*/
+	@Query("select count(h)from BusinessAccountHistory h where h.business.id=?1 and h.description like %?2%")
+	int queryAccountHistoryCount(int businessId,String description);
 }
