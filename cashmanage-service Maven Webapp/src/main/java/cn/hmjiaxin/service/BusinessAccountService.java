@@ -68,20 +68,22 @@ public class BusinessAccountService {
 	 * @param userId
 	 * @param Score
 	 */
-	public void saveAccount(final int businessId,final int userId,final int score,final String description) {
+	public boolean saveAccount(final int businessId,final int userId,final BigDecimal score,final String description) {
 		String sql="call sp_qa_business_saveAccount(?,?,?,?)";
-		this.jdbcTemplate.execute(sql,new CallableStatementCallback(){
+		boolean count=this.jdbcTemplate.execute(sql,new CallableStatementCallback(){
 
 			public Object doInCallableStatement(CallableStatement cs)
 					throws SQLException, DataAccessException {
 				cs.setInt(1, businessId);
 				cs.setInt(2, userId);
-				cs.setInt(3, score);
+				cs.setBigDecimal(3, score);
 				cs.setString(4, description);
 				cs.execute();
 				return true;
 			}
-		});   
+			
+		});
+		return count;
 	}
 
 }

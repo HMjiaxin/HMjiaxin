@@ -100,12 +100,16 @@ public class FinanceManageContraller {
 				jsonCallback + "(" + JSONArray.fromObject(map) + ")");
 
 	}
-	/**提现申请*/
+	/**提现申请
+	 * @throws IOException */
 	@RequestMapping("/drawcashapply")
-	public void drawCashApply(@RequestParam("businessId")int businessId,@RequestParam("Score")BigDecimal Score){
-		accountHistoryService.insertAccountHistory(businessId, 0, Score, "提现", 0, "");
+	public void drawCashApply(HttpServletResponse response,@RequestParam("businessId")int businessId,@RequestParam("Score")BigDecimal Score) throws IOException{
+		boolean result=accountHistoryService.insertAccountHistory(businessId, 0, Score, "提现", 0, "");
+		response.getWriter().print(result);
 	}
-	
+	/**
+	 * 获取账户余额
+	 */
 	@RequestMapping("/getscore")
 	public void getScore(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
@@ -113,7 +117,10 @@ public class FinanceManageContraller {
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		HttpSession session = request.getSession();
 		int businessId = (Integer) session.getAttribute("");
-		businessId = 10001;
+		businessId=Integer.parseInt(request.getParameter("businessId"));
+		if(businessId==0){
+			businessId = 10001;
+		}
 		BigDecimal score=accountService.getScoreByBessinessId(businessId);
 		response.getWriter().print(score);
 	}

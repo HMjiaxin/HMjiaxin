@@ -68,10 +68,10 @@ public class BusinessAccountHistoryService {
 		return true;
 	}
 	/**一条新的提现申请*/
-	public void insertAccountHistory(final int businessId, final int userid,
+	public boolean insertAccountHistory(final int businessId, final int userid,
 			final BigDecimal drawCashScore, final String decision, final int state, final String ip) {
 		String sql="call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
-		jdbcTemplate.execute(sql,new CallableStatementCallback(){
+		boolean result=jdbcTemplate.execute(sql,new CallableStatementCallback(){
 
 			public Object doInCallableStatement(CallableStatement cs)
 					throws SQLException, DataAccessException {
@@ -85,11 +85,11 @@ public class BusinessAccountHistoryService {
 				return true;
 			}
 		});    
-//		return false;
+		return result;
 	}
 	/**查询充值记录(单个用户)*/
 	public List<BusinessAccountHistory> queryByBusinessId(int pageSize,int length,int businessId) {
-		Sort sort=new Sort(Sort.Direction.DESC,"createdDate","lastUpdatedDate");
+		Sort sort=new Sort(Sort.Direction.DESC,"createdDate");
 		Pageable pageable = new PageRequest(pageSize,length,sort);
 		return accountHistoryDao.queryByBusinessIdAndDescriptionLike(businessId,"企业客户充值",pageable);
 	}
@@ -103,7 +103,6 @@ public class BusinessAccountHistoryService {
 			int pageSize, int length, String description) {
 		Sort sort=new Sort(Sort.DEFAULT_DIRECTION.DESC,"createdDate");
 		Pageable pageable=new PageRequest(pageSize,length,sort);
-
 		return accountHistoryDao.queryByBusinessIdAndDescriptionLike(businessId,description, pageable);
 	}
 	public int queryAccountHistoryCount(int businessId, String description) {

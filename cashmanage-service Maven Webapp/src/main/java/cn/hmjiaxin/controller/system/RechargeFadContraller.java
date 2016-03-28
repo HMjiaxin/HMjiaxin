@@ -1,6 +1,7 @@
 package cn.hmjiaxin.controller.system;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,11 +17,13 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hmjiaxin.model.Business;
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.BusinessAccountHistory;
+import cn.hmjiaxin.model.ReturnResult;
 import cn.hmjiaxin.service.BusinessAccountHistoryService;
 import cn.hmjiaxin.service.BusinessAccountService;
 import cn.hmjiaxin.service.BusinessService;
@@ -85,7 +88,7 @@ public class RechargeFadContraller {
 		if (list.size() > 0) {
 			for (BusinessAccount ba : list) {
 				Map<String, String> elementMap = new HashMap<String, String>();
-				elementMap.put("businessId", ba.getBusiness().getId()+"");
+				elementMap.put("businessId", ba.getBusiness().getId() + "");
 				elementMap.put("businessName", ba.getBusiness().getName());
 				elementMap.put("contactPerson", ba.getBusiness()
 						.getContactPerson());
@@ -101,7 +104,8 @@ public class RechargeFadContraller {
 
 	/**
 	 * 展示账户历史纪录
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	@RequestMapping("/rechargehistorylist")
 	public void showAccountHistory(HttpServletRequest request,
@@ -138,7 +142,6 @@ public class RechargeFadContraller {
 				} else {
 					elementMap.put("createDate", bah.getCreatedDate() + "");
 				}
-				// elementMap.put("", value);
 				result.add(elementMap);
 			}
 		}
@@ -147,8 +150,20 @@ public class RechargeFadContraller {
 		res = res.substring(1, res.length() - 1);
 		response.getWriter().print(jsonCallback + "(" + res + ")");
 	}
-	
+
 	@RequestMapping("/recharge")
-	public void recharge(@RequestParam("businessId")int businessId,@RequestParam("Score")int Score){
-		accountService.saveAccount(businessId, 0, Score, "企业客户充值");}
+//	@ResponseBody
+	public void recharge(HttpServletRequest request,HttpServletResponse response,
+			@RequestParam("businessId") int businessId,
+			@RequestParam("score") BigDecimal score) throws IOException {
+		String jsonCallback = request.getParameter("callback");
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		boolean flag = accountService.saveAccount(businessId, 0, score,
+				"企业客户充值");
+		ReturnResult rr=new ReturnResult(flag?1:0,"成功");
+		response.getWriter().print(jsonCallback+"("+JSONArray.fromObject(rr).toString()+")");
+//		return jsonCallback+"("+rr+")";
+	}
+
 }

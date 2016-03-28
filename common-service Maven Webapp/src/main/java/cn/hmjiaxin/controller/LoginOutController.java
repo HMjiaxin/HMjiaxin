@@ -69,9 +69,6 @@ public class LoginOutController {
 			@RequestParam("inputPassword") String userPassword,
 			@RequestParam(value="userType",required=false )String userType)
 			throws IOException {
-		System.out.println(userPhone);
-		System.out.println(userPassword);
-		System.out.println(userType);
 		userPassword = StringUtil.encodeMD5(userPassword);
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		response.setCharacterEncoding("utf-8");
