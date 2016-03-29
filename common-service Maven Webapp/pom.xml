@@ -109,6 +109,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>common-service</finalName>
+		<finalName>common</finalName>
 	</build>
 </project>
