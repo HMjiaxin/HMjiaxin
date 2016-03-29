@@ -15,11 +15,11 @@ import cn.hmjiaxin.service.BusinessAccountService;
  *
  */
 @RestController
-public class RechargeContraller {
+public class RechargeController {
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
 	@Autowired
-	public RechargeContraller(
+	public RechargeController(
 			BusinessAccountHistoryService accountHistoryService,
 			BusinessAccountService accountService) {
 		super();

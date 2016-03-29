@@ -89,8 +89,9 @@ public class FinanceManageContraller {
 		if (list.size() > 0) {
 			for (BusinessAccountHistory bah : list) {
 				Map<String, String> eleMap = new HashMap<String, String>();
+				eleMap.put("status", bah.getStatus()+"");
 				eleMap.put("id", bah.getId() + "");
-				eleMap.put("Score", bah.getScore() + "");
+				eleMap.put("score", bah.getScore() + "");
 				eleMap.put("description", bah.getDescription());
 				eleMap.put("createdDate", sdf.format(bah.getCreatedDate()));
 				result.add(eleMap);

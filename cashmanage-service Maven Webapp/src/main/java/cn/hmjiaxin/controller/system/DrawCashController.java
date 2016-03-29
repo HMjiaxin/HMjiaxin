@@ -107,7 +107,7 @@ public class DrawCashController {
 				elementMap.put("contactPerson", business.getContactPerson());
 				elementMap.put("businessId", businessId + "");
 				elementMap.put("score", account.getScore() + "");
-				elementMap.put("drawCashScore", bah.getStatus() + "");
+				elementMap.put("drawCashScore", bah.getScore() + "");
 				elementMap.put("status", bah.getStatus() + "");
 				Date createDate = bah.getCreatedDate();
 				if (createDate == null) {

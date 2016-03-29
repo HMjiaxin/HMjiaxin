@@ -39,17 +39,14 @@ import cn.hmjiaxin.util.StringUtil;
 public class RechargeFadContraller {
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
-	private BusinessService businessService;
 
 	@Autowired
 	public RechargeFadContraller(
 			BusinessAccountHistoryService accountHistoryService,
-			BusinessAccountService accountService,
-			BusinessService businessService) {
+			BusinessAccountService accountService ) {
 		super();
 		this.accountHistoryService = accountHistoryService;
 		this.accountService = accountService;
-		this.businessService = businessService;
 	}
 
 	/**

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="cashmanage-service Maven Webapp">
+    <wb-module deploy-name="cashManage-service Maven Webapp">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <property name="context-root" value="cashmanage"/>
-        <property name="java-output-path" value="/cashmanage-service Maven Webapp/target/classes"/>
+        <property name="java-output-path" value="/cashManage-service Maven Webapp/target/classes"/>
     </wb-module>
 </project-modules>
