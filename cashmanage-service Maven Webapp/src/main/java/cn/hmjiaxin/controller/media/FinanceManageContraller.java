@@ -111,9 +111,9 @@ public class FinanceManageContraller {
 	public void drawCashApply(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("businessId") int businessId,
-			@RequestParam("Score") BigDecimal Score) throws IOException {
+			@RequestParam("score") BigDecimal Score) throws IOException {
 		boolean result = accountHistoryService.insertAccountHistory(businessId,
-				0, Score, "提现", 0, "");
+				0, Score, "提现", 1, "");
 		ReturnResult rr = new ReturnResult(result ? 1 : 0, "申请成功");
 		response.getWriter().print(StringUtil.JSONCallBackUrl(request, rr));
 	}

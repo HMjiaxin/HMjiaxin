@@ -1,4 +1,4 @@
-package cn.hmjiaxin.controller.system;
+package cn.hmjiaxin.controller.admin;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

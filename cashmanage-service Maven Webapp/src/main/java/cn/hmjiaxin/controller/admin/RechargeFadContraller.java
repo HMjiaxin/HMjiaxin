@@ -1,4 +1,4 @@
-package cn.hmjiaxin.controller.system;
+package cn.hmjiaxin.controller.admin;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ public class RechargeFadContraller {
 	@Autowired
 	public RechargeFadContraller(
 			BusinessAccountHistoryService accountHistoryService,
-			BusinessAccountService accountService ) {
+			BusinessAccountService accountService) {
 		super();
 		this.accountHistoryService = accountHistoryService;
 		this.accountService = accountService;
@@ -67,7 +67,11 @@ public class RechargeFadContraller {
 			HttpServletResponse response, @RequestParam("draw") String draw,
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
-			@RequestParam("userName") String userName) throws IOException {
+			@RequestParam("userName") String userName,
+			@RequestParam("order[0][column]") int column,
+			@RequestParam("order[0][dir]") String dir) throws IOException {
+		System.out.println("00000000000000000000");
+		System.out.println(column+"-----"+dir);
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -75,7 +79,7 @@ public class RechargeFadContraller {
 			pageSize = start / length;
 		}
 		List<BusinessAccount> list = accountService.queryAllAdvertisers(
-				pageSize, length, userName);// 查询出所有的广告主账号
+				pageSize, length,column,dir, userName);// 查询出所有的广告主账号
 		int totalCount = accountService.queryAdvertiserCouunt(userName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("draw", draw);
@@ -94,7 +98,7 @@ public class RechargeFadContraller {
 			}
 		}
 		map.put("data", result);
-		String returnStr=StringUtil.JSONCallBackUrl(request, map);
+		String returnStr = StringUtil.JSONCallBackUrl(request, map);
 		response.getWriter().print(returnStr);
 	}
 
@@ -141,19 +145,20 @@ public class RechargeFadContraller {
 			}
 		}
 		map.put("data", result);
-		String returnStr=StringUtil.JSONCallBackUrl(request, map);
+		String returnStr = StringUtil.JSONCallBackUrl(request, map);
 		response.getWriter().print(returnStr);
 	}
 
 	@RequestMapping("/recharge")
-	public void recharge(HttpServletRequest request,HttpServletResponse response,
+	public void recharge(HttpServletRequest request,
+			HttpServletResponse response,
 			@RequestParam("businessId") int businessId,
 			@RequestParam("score") BigDecimal score) throws IOException {
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		boolean flag = accountService.saveAccount(businessId, 0, score,
 				"企业客户充值");
-		ReturnResult rr=new ReturnResult(flag?1:0,"成功");
+		ReturnResult rr = new ReturnResult(flag ? 1 : 0, "成功");
 		response.getWriter().print(StringUtil.JSONCallBackUrl(request, rr));
 	}
 
