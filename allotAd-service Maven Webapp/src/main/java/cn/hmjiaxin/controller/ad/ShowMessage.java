@@ -83,13 +83,6 @@ public class ShowMessage {
 			HttpServletRequest request, @RequestParam("types") String ids)
 			throws IOException {
 		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
-
-		System.out.println("----------------");
-		System.out.println();
-		System.out.println(request.getRequestURL());
-		System.out.println(ids);
-		System.out.println();
-		System.out.println("----------------");
 		if (ids == null || "".equals(ids)) {
 			response.getWriter().print(
 					StringUtil.JSONCallBack(request, resultList));
@@ -100,13 +93,12 @@ public class ShowMessage {
 				idArray[i] = Integer.parseInt(idArrayStr[i]);
 			}
 
-		//	List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 			List<WechatBasic> list = wechatBasicService
 					.queryWechatByType(idArray);
 			if (list.size() > 0) {
-
 				for (WechatBasic wb : list) {
 					Map<String, String> eleMap = new HashMap<String, String>();
+					eleMap.put("mediaId", wb.getId()+"");
 					eleMap.put("name", wb.getName());
 					eleMap.put("fanQuantity", "10W+");
 					eleMap.put("accountImageUrl", wb.getAccountImageUrl());
@@ -114,7 +106,6 @@ public class ShowMessage {
 					resultList.add(eleMap);
 				}
 			}
-			// System.out.println(JSONArray.fromObject(list));
 			response.getWriter().print(
 					StringUtil.JSONCallBack(request, resultList));
 		}
