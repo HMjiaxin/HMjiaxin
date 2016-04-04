@@ -95,21 +95,33 @@ public class BusinessAccountService {
 	public boolean saveAccount(final int businessId, final int userId,
 			final BigDecimal score, final String description) {
 		String sql = "call sp_qa_business_saveAccount(?,?,?,?)";
-		boolean count = this.jdbcTemplate.execute(sql,
-				new CallableStatementCallback() {
+		boolean result=jdbcTemplate.execute(sql,new CallableStatementCallback<Boolean>() {
 
-					public Object doInCallableStatement(CallableStatement cs)
-							throws SQLException, DataAccessException {
-						cs.setInt(1, businessId);
-						cs.setInt(2, userId);
-						cs.setBigDecimal(3, score);
-						cs.setString(4, description);
-						cs.execute();
-						return true;
-					}
-
-				});
-		return count;
+			public Boolean doInCallableStatement(CallableStatement cs)
+					throws SQLException, DataAccessException {
+				cs.setInt(1, businessId);
+				cs.setInt(2, userId);
+				cs.setBigDecimal(3, score);
+				cs.setString(4, description);
+				cs.execute();
+				return true;
+			}
+		});
+//		boolean result = this.jdbcTemplate.execute(sql,
+//				new CallableStatementCallback() {
+//
+//					public Object doInCallableStatement(CallableStatement cs)
+//							throws SQLException, DataAccessException {
+//						cs.setInt(1, businessId);
+//						cs.setInt(2, userId);
+//						cs.setBigDecimal(3, score);
+//						cs.setString(4, description);
+//						cs.execute();
+//						return true;
+//					}
+//
+//				});
+		return result;
 	}
 
 }

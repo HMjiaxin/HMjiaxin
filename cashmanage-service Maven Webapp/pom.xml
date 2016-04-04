@@ -84,6 +84,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>cashManage</finalName>
+		<finalName>cashmanage</finalName>
 	</build>
 </project>
