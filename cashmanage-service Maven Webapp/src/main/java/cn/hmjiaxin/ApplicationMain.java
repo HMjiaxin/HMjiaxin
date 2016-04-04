@@ -2,11 +2,13 @@ package cn.hmjiaxin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+@SpringBootApplication
 @Configuration
 // 配置控制
 @EnableAutoConfiguration
@@ -23,6 +25,6 @@ public class ApplicationMain extends SpringBootServletInitializer {
 	@Override
 	protected SpringApplicationBuilder configure(
 			SpringApplicationBuilder builder) {
-		return builder.sources(this.getClass());
+		return builder.sources(ApplicationMain.class);
 	}
 }

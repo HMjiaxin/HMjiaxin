@@ -69,22 +69,37 @@ public class BusinessAccountHistoryService {
 	}
 	/**一条新的提现申请*/
 	public boolean insertAccountHistory(final int businessId, final int userid,
-			final BigDecimal drawCashScore, final String decision, final int state, final String ip) {
-		String sql="call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
-		boolean result=jdbcTemplate.execute(sql,new CallableStatementCallback(){
+			final BigDecimal drawCashScore, final String decision,
+			final int state, final String ip) {
+		String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
+		boolean result=jdbcTemplate.execute(sql, new CallableStatementCallback<Boolean>() {
 
-			public Object doInCallableStatement(CallableStatement cs)
+			public Boolean doInCallableStatement(CallableStatement cs)
 					throws SQLException, DataAccessException {
+
 				cs.setInt(1, businessId);
 				cs.setInt(2, userid);
 				cs.setBigDecimal(3, drawCashScore);
 				cs.setString(4, decision);
 				cs.setInt(5, state);
-				cs.setString(6,ip);
+				cs.setString(6, ip);
 				cs.execute();
 				return true;
 			}
-		});    
+
+		});
+		/*
+		 * String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
+		 * boolean result = jdbcTemplate.execute(sql, new
+		 * CallableStatementCallback() {
+		 * 
+		 * public Object doInCallableStatement(CallableStatement cs) throws
+		 * SQLException, DataAccessException { cs.setInt(1, businessId);
+		 * cs.setInt(2, userid); cs.setBigDecimal(3, drawCashScore);
+		 * cs.setString(4, decision); cs.setInt(5, state); cs.setString(6, ip);
+		 * cs.execute(); return true; } });
+		 */
+		// return result;
 		return result;
 	}
 	/**查询充值记录(单个用户)*/

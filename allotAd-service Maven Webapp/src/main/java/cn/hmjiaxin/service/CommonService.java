@@ -2,12 +2,14 @@ package cn.hmjiaxin.service;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,25 +38,40 @@ public class CommonService {
 			final BigDecimal drawCashScore, final String decision,
 			final int state, final String ip) {
 		String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
-		boolean result = jdbcTemplate.execute(sql,
-				new CallableStatementCallback() {
+		boolean result=jdbcTemplate.execute(sql, new CallableStatementCallback<Boolean>() {
 
-					public Object doInCallableStatement(CallableStatement cs)
-							throws SQLException, DataAccessException {
-						cs.setInt(1, businessId);
-						cs.setInt(2, userid);
-						cs.setBigDecimal(3, drawCashScore);
-						cs.setString(4, decision);
-						cs.setInt(5, state);
-						cs.setString(6, ip);
-						cs.execute();
-						return true;
-					}
-				});
+			public Boolean doInCallableStatement(CallableStatement cs)
+					throws SQLException, DataAccessException {
+
+				cs.setInt(1, businessId);
+				cs.setInt(2, userid);
+				cs.setBigDecimal(3, drawCashScore);
+				cs.setString(4, decision);
+				cs.setInt(5, state);
+				cs.setString(6, ip);
+				cs.execute();
+				return true;
+			}
+
+		});
+		/*
+		 * String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
+		 * boolean result = jdbcTemplate.execute(sql, new
+		 * CallableStatementCallback() {
+		 * 
+		 * public Object doInCallableStatement(CallableStatement cs) throws
+		 * SQLException, DataAccessException { cs.setInt(1, businessId);
+		 * cs.setInt(2, userid); cs.setBigDecimal(3, drawCashScore);
+		 * cs.setString(4, decision); cs.setInt(5, state); cs.setString(6, ip);
+		 * cs.execute(); return true; } });
+		 */
+		// return result;
 		return result;
 	}
+
 	/**
 	 * 查询账户余额
+	 * 
 	 * @param businessId
 	 * @return
 	 */
@@ -63,8 +80,10 @@ public class CommonService {
 		BigDecimal score = ba.getScore();
 		return score;
 	}
+
 	/**
 	 * 获取所有微信类型
+	 * 
 	 * @return
 	 */
 	public List<WechatAccountType> getWechatType() {
