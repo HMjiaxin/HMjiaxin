@@ -2,6 +2,7 @@ package cn.hmjiaxin.controller.media;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public class FinanceManageContraller {
 			@RequestParam("start") int start,
 			@RequestParam("length") int length, @RequestParam("type") int type// 查询类型0所有记录1提现记录2收入纪录
 	) throws IOException {
+		DecimalFormat df=new DecimalFormat("0.00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -91,7 +93,7 @@ public class FinanceManageContraller {
 				Map<String, String> eleMap = new HashMap<String, String>();
 				eleMap.put("status", bah.getStatus()+"");
 				eleMap.put("id", bah.getId() + "");
-				eleMap.put("score", bah.getScore() + "");
+				eleMap.put("score", df.format(bah.getScore()));
 				eleMap.put("description", bah.getDescription());
 				eleMap.put("createdDate", sdf.format(bah.getCreatedDate()));
 				result.add(eleMap);

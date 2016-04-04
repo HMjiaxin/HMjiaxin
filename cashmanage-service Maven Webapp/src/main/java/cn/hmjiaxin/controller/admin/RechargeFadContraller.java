@@ -2,6 +2,7 @@ package cn.hmjiaxin.controller.admin;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -68,10 +70,13 @@ public class RechargeFadContraller {
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
 			@RequestParam("userName") String userName,
-			@RequestParam("order[0][column]") int column,
-			@RequestParam("order[0][dir]") String dir) throws IOException {
-		System.out.println("00000000000000000000");
-		System.out.println(column+"-----"+dir);
+			@RequestParam(value="order[0][column]",required=false) String columnStr,
+			@RequestParam(value="order[0][dir]",required=false) String dir) throws IOException {
+		DecimalFormat df=new DecimalFormat("0.00");
+		int column=0;
+		if(columnStr!=null&&!"".equals(columnStr)){
+			column=Integer.parseInt(columnStr);
+		}
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -93,7 +98,7 @@ public class RechargeFadContraller {
 				elementMap.put("businessName", ba.getBusiness().getName());
 				elementMap.put("contactPerson", ba.getBusiness()
 						.getContactPerson());
-				elementMap.put("score", ba.getScore() + "");
+				elementMap.put("score", df.format(ba.getScore()));
 				result.add(elementMap);
 			}
 		}
@@ -114,6 +119,7 @@ public class RechargeFadContraller {
 			@RequestParam("length") int length,
 			@RequestParam("businessId") int businessId) throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DecimalFormat df=new DecimalFormat("0.00");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -134,12 +140,12 @@ public class RechargeFadContraller {
 
 				elementMap.put("businessName", bah.getBusiness().getName());
 				elementMap.put("description", bah.getDescription());
-				elementMap.put("score", bah.getScore() + "");
+				elementMap.put("score", df.format(bah.getScore() ));
 				Date createDate = bah.getCreatedDate();
 				if (createDate == null) {
 					elementMap.put("createDate", "");
 				} else {
-					elementMap.put("createDate", bah.getCreatedDate() + "");
+					elementMap.put("createDate", sdf.format(bah.getCreatedDate() ));
 				}
 				result.add(elementMap);
 			}

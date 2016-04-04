@@ -1,6 +1,7 @@
 package cn.hmjiaxin.controller.admin;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class DrawCashController {
 			@RequestParam("keyword") String keyword)
 			throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DecimalFormat df=new DecimalFormat("0.00");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -106,8 +108,8 @@ public class DrawCashController {
 				elementMap.put("id", bah.getId() + "");
 				elementMap.put("contactPerson", business.getContactPerson());
 				elementMap.put("businessId", businessId + "");
-				elementMap.put("score", account.getScore() + "");
-				elementMap.put("drawCashScore", bah.getScore() + "");
+				elementMap.put("score", df.format(account.getScore()));
+				elementMap.put("drawCashScore", df.format(bah.getScore()));
 				elementMap.put("status", bah.getStatus() + "");
 				Date createDate = bah.getCreatedDate();
 				if (createDate == null) {
