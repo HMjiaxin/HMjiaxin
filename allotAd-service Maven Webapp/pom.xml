@@ -86,6 +86,6 @@
 
 
   <build>
-    <finalName>allotAd</finalName>
+    <finalName>allotad</finalName>
   </build>
 </project>

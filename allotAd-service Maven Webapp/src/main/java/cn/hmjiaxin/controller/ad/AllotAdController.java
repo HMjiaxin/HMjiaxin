@@ -58,6 +58,8 @@ public class AllotAdController {
 			) throws IOException {
 		BigDecimal price=new BigDecimal("0.038");//广告价格
 		
+		
+		
 		boolean flag = commonService.insertAccountHistory(businessId, userId,
 				budget, "申请广告预算", 0, "");
 		response.getWriter().print(StringUtil.JSONCallBack(request, flag));
