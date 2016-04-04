@@ -1,5 +1,7 @@
+cn\hmjiaxin\model\SocialConnection.class
 cn\hmjiaxin\util\StringUtil.class
+cn\hmjiaxin\service\BusinessAccountHistoryService$1.class
+cn\hmjiaxin\service\BusinessAccountHistoryService.class
 cn\hmjiaxin\model\BusinessAccountHistory.class
 cn\hmjiaxin\model\Business.class
-cn\hmjiaxin\model\SocialConnection.class
 cn\hmjiaxin\controller\ad\RechargeController.class
