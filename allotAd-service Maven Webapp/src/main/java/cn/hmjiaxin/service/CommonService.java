@@ -34,7 +34,7 @@ public class CommonService {
 	}
 
 	/** 一条新的提现申请 */
-	public boolean insertAccountHistory(final int businessId, final int userid,
+	public boolean insertAccountHistory(final int businessId, /*final int userid,*/
 			final BigDecimal drawCashScore, final String decision,
 			final int state, final String ip) {
 		String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
@@ -44,11 +44,11 @@ public class CommonService {
 					throws SQLException, DataAccessException {
 
 				cs.setInt(1, businessId);
-				cs.setInt(2, userid);
-				cs.setBigDecimal(3, drawCashScore);
-				cs.setString(4, decision);
-				cs.setInt(5, state);
-				cs.setString(6, ip);
+				/*cs.setInt(2, userid);*/
+				cs.setBigDecimal(2, drawCashScore);
+				cs.setString(3, decision);
+				cs.setInt(4, state);
+				cs.setString(5, ip);
 				cs.execute();
 				return true;
 			}

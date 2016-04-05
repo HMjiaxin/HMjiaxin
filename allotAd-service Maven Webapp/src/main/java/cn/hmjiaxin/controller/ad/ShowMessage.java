@@ -14,7 +14,10 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hmjiaxin.model.PostLibrary;
 import cn.hmjiaxin.model.WechatBasic;
@@ -26,7 +29,6 @@ import cn.hmjiaxin.util.StringUtil;
 public class ShowMessage {
 	private PostLibraryService postLibraryService;
 	private WechatBasicService wechatBasicService;
-
 	@Autowired
 	public ShowMessage(PostLibraryService postLibraryService,
 			WechatBasicService wechatBasicService) {
@@ -34,6 +36,7 @@ public class ShowMessage {
 		this.postLibraryService = postLibraryService;
 		this.wechatBasicService = wechatBasicService;
 	}
+//	ObjectMapper mapper=new ObjectMapper();
 
 	/**
 	 * 展示下发消息库
@@ -41,6 +44,7 @@ public class ShowMessage {
 	 * @throws IOException
 	 */
 	@RequestMapping("/postlibrary")
+//	@ResponseBody
 	public void test(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("businessId") int businessId,
 			@RequestParam("number") String numberStr,
@@ -59,6 +63,7 @@ public class ShowMessage {
 		if (list.size() > 0) {
 			for (PostLibrary post : list) {
 				Map<String, String> eleMap = new HashMap<String, String>();
+				eleMap.put("postId", post.getId()+"");
 				eleMap.put("title", post.getTitle());
 				String author = post.getAuthor();
 				eleMap.put("author", "".equals(author) || author == null ? "无"
@@ -69,12 +74,13 @@ public class ShowMessage {
 				resultList.add(eleMap);
 			}
 		}
+//		 return request.getAttribute("callback")+"("+mapper.writeValueAsString(resultList)+")";
 		response.getWriter()
 				.print(StringUtil.JSONCallBack(request, resultList));
 	}
 
 	/**
-	 * 查询类别代表媒体
+	 * 查询代表媒体
 	 * 
 	 * @throws IOException
 	 */
