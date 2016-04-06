@@ -18,7 +18,7 @@ public interface AccountDao extends CrudRepository<BusinessAccount, Long>{
 	List<BusinessAccount> queryAllAdvertisers(Pageable pageable,String userName);
 	@Query("select count(a) from BusinessAccount a where a.business.isAds='1' and a.business.name like %?1%")
 	int queryAdvertiserCouunt(String userName);
-
+	@Query("select a.score from BusinessAccount a where a.business=?1")
 	BigDecimal findScoreByBusiness(Business business);
 	
 	

@@ -51,15 +51,16 @@ public class AllotAdController {
 	ObjectMapper mapper = new ObjectMapper();
 
 	/**
-	 * 新增推广内容
+	 * 新增下发广告
 	 * 
 	 * @throws IOException
 	 */
-	@RequestMapping("/addnewtask")
+	@RequestMapping("/addnewad")
 	public void createNewAd(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("businessId") int businessId,// 企业id
 			@RequestParam("postId") int postId,// 广告id
+			@RequestParam("exceptMedia")String exceptMedia,//删除媒体
 			@RequestParam("mediaType") String mediaType,// 媒体类型
 			@RequestParam("startDate") String startDate,// 广告生效时间
 			@RequestParam("endDate") String endDate,// 广告失效时间
@@ -115,6 +116,7 @@ public class AllotAdController {
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
 			@RequestParam("status") int status,
+			
 			@RequestParam(value = "order[0][column]", required = false) String columnStr,
 			@RequestParam(value = "order[0][dir]", required = false) String sort)
 			throws IOException {
@@ -141,11 +143,6 @@ public class AllotAdController {
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		if (ads.size() > 0) {
 			for (SponsorAds ad : ads) {
-				System.out.println("------------------------");
-				System.out.println();
-				System.out.println(ad.getId());
-				System.out.println();
-				System.out.println("------------------------");
 				String time=sdf.format(ad.getStartDate())+"至"+sdf.format(ad.getEndDate());
 				Map<String, String> elementMap = new HashMap<String, String>();
 				elementMap.put("adId", ad.getId()+"");

@@ -1,6 +1,7 @@
 package cn.hmjiaxin.service;
 
 import java.math.BigDecimal;
+import java.text.Bidi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +51,10 @@ public class SponsorAdsService {
 			Date startDate, Date endDate, BigDecimal price, int priceType,
 			BigDecimal budget/*, int userId*/) {
 		Business business = businessDao.findOne(businessId);
+
 		BigDecimal score = accountDao.findScoreByBusiness(business);
+
+		
 		if (score.subtract(budget).doubleValue() < 0) {
 			return false;
 		} else {
@@ -70,9 +74,11 @@ public class SponsorAdsService {
 			sAds.setStatus(1);
 			sAds.setRefCount(refCount);
 			sAds.setCreatedDate(new Date());
+			sAds.setBusinessWeight(new BigDecimal("1.00"));
+			sAds.setCost(new BigDecimal("0.00"));
 			sponsorAdsDao.save(sAds);// 添加一条新的广告
 
-			commonService.insertAccountHistory(businessId, /*userId,*/ budget,
+			commonService.insertAccountHistory(businessId, /*userId,*/0, budget,
 					"申请广告预算", 0, "");
 			return true;
 		}

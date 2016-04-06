@@ -9,8 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 @Entity
-@Table(name="qa_business_sponsor_ads")
+@Table(name = "qa_business_sponsor_ads")
 public class SponsorAds {
 	@Id
 	private int id;
@@ -18,16 +19,15 @@ public class SponsorAds {
 	@JoinColumn(name = "business_id")
 	private Business business;
 	@OneToOne
-	@JoinColumn(name = "post_id")
-	// '图文id',
+	@JoinColumn(name = "post_id")// '图文id',
 	private PostLibrary post;
 	@Column(name = "title")
 	private String title;// 广告标题'
 	@Column(name = "media_type")
 	private String mediaType;// '媒体类型',
-	@Column(name = "startDate")
+	@Column(name = "start_date")
 	private Date startDate;// '广告生效时间'
-	@Column(name = "endDate")
+	@Column(name = "end_date")
 	private Date endDate;// '广告失效时间',
 	@Column(name = "price")
 	private BigDecimal price; // '广告价格，元/人',
@@ -167,5 +167,7 @@ public class SponsorAds {
 	public void setLastUpdateDate(Date lastUpdateDate) {
 		this.lastUpdateDate = lastUpdateDate;
 	}
+
 	
+
 }
