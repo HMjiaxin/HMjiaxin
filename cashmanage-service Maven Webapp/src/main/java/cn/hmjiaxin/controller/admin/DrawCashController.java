@@ -127,7 +127,14 @@ public class DrawCashController {
 		String returnStr=StringUtil.JSONCallBackUrl(request, map);
 		response.getWriter().print(returnStr);
 	}
-
+	/**
+	 * 修改提现状态
+	 * @param changeStatus
+	 * @param id
+	 * @param response
+	 * @param request
+	 * @throws IOException
+	 */
 	@RequestMapping("/updateStatus")
 	public void updateStatus(@RequestParam("status") int changeStatus,
 			@RequestParam("id") int id, HttpServletResponse response,

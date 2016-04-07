@@ -65,17 +65,20 @@ public class RechargeFadContraller {
 	 * @throws IOException
 	 */
 	@RequestMapping("/rechargelist")
-	public void rechargeList(HttpServletRequest request,
-			HttpServletResponse response, @RequestParam("draw") String draw,
+	public void rechargeList(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("draw") String draw,
 			@RequestParam("start") int start,
 			@RequestParam("length") int length,
 			@RequestParam("userName") String userName,
-			@RequestParam(value="order[0][column]",required=false) String columnStr,
-			@RequestParam(value="order[0][dir]",required=false) String dir) throws IOException {
-		DecimalFormat df=new DecimalFormat("0.00");
-		int column=0;
-		if(columnStr!=null&&!"".equals(columnStr)){
-			column=Integer.parseInt(columnStr);
+			@RequestParam(value = "order[0][column]", required = false) String columnStr,
+			@RequestParam(value = "order[0][dir]", required = false) String dir)
+			throws IOException {
+		DecimalFormat df = new DecimalFormat("0.00");
+		int column = 0;
+		if (columnStr != null && !"".equals(columnStr)) {
+			column = Integer.parseInt(columnStr);
 		}
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -84,7 +87,7 @@ public class RechargeFadContraller {
 			pageSize = start / length;
 		}
 		List<BusinessAccount> list = accountService.queryAllAdvertisers(
-				pageSize, length,column,dir, userName);// 查询出所有的广告主账号
+				pageSize, length, column, dir, userName);// 查询出所有的广告主账号
 		int totalCount = accountService.queryAdvertiserCouunt(userName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("draw", draw);
@@ -119,7 +122,7 @@ public class RechargeFadContraller {
 			@RequestParam("length") int length,
 			@RequestParam("businessId") int businessId) throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DecimalFormat df=new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.00");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		int pageSize = 0;
@@ -140,12 +143,13 @@ public class RechargeFadContraller {
 
 				elementMap.put("businessName", bah.getBusiness().getName());
 				elementMap.put("description", bah.getDescription());
-				elementMap.put("score", df.format(bah.getScore() ));
+				elementMap.put("score", df.format(bah.getScore()));
 				Date createDate = bah.getCreatedDate();
 				if (createDate == null) {
 					elementMap.put("createDate", "");
 				} else {
-					elementMap.put("createDate", sdf.format(bah.getCreatedDate() ));
+					elementMap.put("createDate",
+							sdf.format(bah.getCreatedDate()));
 				}
 				result.add(elementMap);
 			}
@@ -155,6 +159,15 @@ public class RechargeFadContraller {
 		response.getWriter().print(returnStr);
 	}
 
+	/**
+	 * 给广告主充值
+	 * 
+	 * @param request
+	 * @param response
+	 * @param businessId
+	 * @param score
+	 * @throws IOException
+	 */
 	@RequestMapping("/recharge")
 	public void recharge(HttpServletRequest request,
 			HttpServletResponse response,

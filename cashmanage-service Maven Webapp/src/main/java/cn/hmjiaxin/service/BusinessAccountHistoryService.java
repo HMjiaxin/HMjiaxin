@@ -73,10 +73,8 @@ public class BusinessAccountHistoryService {
 			final int state, final String ip) {
 		String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
 		boolean result=jdbcTemplate.execute(sql, new CallableStatementCallback<Boolean>() {
-
 			public Boolean doInCallableStatement(CallableStatement cs)
 					throws SQLException, DataAccessException {
-
 				cs.setInt(1, businessId);
 				cs.setInt(2, userid);
 				cs.setBigDecimal(3, drawCashScore);
@@ -88,18 +86,6 @@ public class BusinessAccountHistoryService {
 			}
 
 		});
-		/*
-		 * String sql = "call sp_qa_business_insertAccountHistory(?,?,?,?,?,?)";
-		 * boolean result = jdbcTemplate.execute(sql, new
-		 * CallableStatementCallback() {
-		 * 
-		 * public Object doInCallableStatement(CallableStatement cs) throws
-		 * SQLException, DataAccessException { cs.setInt(1, businessId);
-		 * cs.setInt(2, userid); cs.setBigDecimal(3, drawCashScore);
-		 * cs.setString(4, decision); cs.setInt(5, state); cs.setString(6, ip);
-		 * cs.execute(); return true; } });
-		 */
-		// return result;
 		return result;
 	}
 	/**查询充值记录(单个用户)*/

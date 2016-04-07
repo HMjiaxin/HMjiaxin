@@ -28,7 +28,7 @@ public interface AccountHistoryDao extends CrudRepository<BusinessAccountHistory
 	void updateStatus(int changeStatus, int id);
 
 	/**查询账户历史纪录(单一账户)*/
-	@Query("select h from BusinessAccountHistory h where h.business.id=?1 and h.description =?2")
+	@Query("select h from BusinessAccountHistory h where h.business.id=?1 and h.description like %?2%")
 	List<BusinessAccountHistory> queryByBusinessIdAndDescriptionLike(int businessId,String description,Pageable pageable);
 	/**查询账户历史纪录数(单一账户)*/
 	@Query("select count(h)from BusinessAccountHistory h where h.business.id=?1 and h.description like %?2%")
