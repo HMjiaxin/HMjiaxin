@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import net.sf.json.JSONArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -23,7 +25,6 @@ public class CommonService {
 	private AccountDao accountDao;
 	private WechatAccountTypeDao wechatAccountTypeDao;
 	private JdbcTemplate jdbcTemplate;
-
 	@Autowired
 	public CommonService(AccountDao accountDao, JdbcTemplate jdbcTemplate,
 			WechatAccountTypeDao wechatAccountTypeDao) {
@@ -88,5 +89,23 @@ public class CommonService {
 	 */
 	public List<WechatAccountType> getWechatType() {
 		return (List<WechatAccountType>) wechatAccountTypeDao.findAll();
+	}
+
+	public String getMediaType(String mediaTypeIds) {
+		String[] mediaTypes=mediaTypeIds.split("[^\\d]");
+		if (mediaTypes.length<=0) {
+			return "";
+		}
+		String resultString=" ";
+		for (int i = 0; i < mediaTypes.length; i++) {
+			if("".equals(mediaTypes[i])){
+				continue;
+			}
+			WechatAccountType wechatAccountType=wechatAccountTypeDao.findOne(Integer.parseInt(mediaTypes[i]));
+			if (wechatAccountType!=null) {
+				resultString+=wechatAccountType.getClassName()+",";
+			}
+		}
+		return resultString.substring(0,resultString.length()-1);
 	}
 }

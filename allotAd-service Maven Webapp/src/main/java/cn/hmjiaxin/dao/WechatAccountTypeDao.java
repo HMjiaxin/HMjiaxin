@@ -6,4 +6,6 @@ import cn.hmjiaxin.model.WechatAccountType;
 
 public interface WechatAccountTypeDao extends CrudRepository<WechatAccountType, Integer> {
 
+	String findClassNameById(int parseInt);
+
 }

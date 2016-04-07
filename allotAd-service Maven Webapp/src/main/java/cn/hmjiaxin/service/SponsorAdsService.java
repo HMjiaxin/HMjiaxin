@@ -32,7 +32,6 @@ public class SponsorAdsService {
 	private PostLibraryDao postLibraryDao;
 	private CommonService commonService;
 	private AccountDao accountDao;
-
 	@Autowired
 	public SponsorAdsService(SponsorAdsDao sponsorAdsDao,
 			CommonService commonService, BusinessDao businessDao,
@@ -45,7 +44,18 @@ public class SponsorAdsService {
 		this.accountDao = accountDao;
 
 	}
-
+	/**
+	 * 新增一条新的广告，并扣除预算
+	 * @param businessId
+	 * @param postId
+	 * @param mediaType
+	 * @param startDate
+	 * @param endDate
+	 * @param price
+	 * @param priceType
+	 * @param budget
+	 * @return
+	 */
 	@Transactional
 	public boolean addNewAd(int businessId, int postId, String mediaType,
 			Date startDate, Date endDate, BigDecimal price, int priceType,
@@ -83,18 +93,33 @@ public class SponsorAdsService {
 			return true;
 		}
 	}
-
+	/**
+	 * 查询广告
+	 * @param businessId
+	 * @param title
+	 * @param pageSize
+	 * @param length
+	 * @param status
+	 * @param column
+	 * @param sortStr
+	 * @return
+	 */
 	public List<SponsorAds> queryAds(int businessId, String title,
 			int pageSize, int length, int status, int column, String sortStr) {
 		String sortColumn = "";// 排序列;
 		switch (column) {
 		case 1:
+			sortColumn = "createdDate";
 			break;
 		case 2:
+			sortColumn = "createdDate";
 			break;
 		default:
 			sortColumn = "createdDate";
 			break;
+		}
+		if (title==null) {
+			title="";
 		}
 		Direction direction = Sort.DEFAULT_DIRECTION.DESC;
 		if ("asc".equals(sortStr)) {
@@ -109,7 +134,10 @@ public class SponsorAdsService {
 	}
 
 	public int queryAdsCounts(int businessId, String title, int status) {
-
+		if ("".equals(title)) {
+			title="";
+		}
 		return sponsorAdsDao.queryAdsCount(businessId, title, status);
 	}
+
 }

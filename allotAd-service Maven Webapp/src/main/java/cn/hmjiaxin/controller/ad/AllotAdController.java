@@ -25,30 +25,107 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hmjiaxin.model.BusinessAccount;
+import cn.hmjiaxin.model.PostLibrary;
 import cn.hmjiaxin.model.SponsorAds;
 import cn.hmjiaxin.model.WechatBasic;
 import cn.hmjiaxin.service.CommonService;
+import cn.hmjiaxin.service.PostLibraryService;
 import cn.hmjiaxin.service.SponsorAdsService;
 import cn.hmjiaxin.service.WechatBasicService;
 import cn.hmjiaxin.util.StringUtil;
 
 @RestController
 public class AllotAdController {
-	private CommonService commonService;
 	private WechatBasicService wechatBasicService;
 	private SponsorAdsService sponsorAdsService;
+	private PostLibraryService postLibraryService;
 
 	@Autowired
-	public AllotAdController(CommonService commonService,
-			WechatBasicService wechatBasicService,
-			SponsorAdsService sponsorAdsService) {
+	public AllotAdController(WechatBasicService wechatBasicService,
+			SponsorAdsService sponsorAdsService,
+			PostLibraryService postLibraryService) {
 		super();
-		this.commonService = commonService;
 		this.wechatBasicService = wechatBasicService;
 		this.sponsorAdsService = sponsorAdsService;
+		this.postLibraryService = postLibraryService;
 	}
 
-	ObjectMapper mapper = new ObjectMapper();
+	/**
+	 * 展示下发消息库
+	 * 
+	 * @throws IOException
+	 */
+	@RequestMapping("/postlibrary")
+	// @ResponseBody
+	public void test(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("businessId") int businessId,
+			@RequestParam("number") String numberStr,
+			@RequestParam("tag") String tag) throws IOException {
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
+		int number = 100;
+		if (numberStr != null && !"".equals(numberStr)
+				&& !"all".equals(numberStr)) {
+			number = Integer.parseInt(numberStr);
+		}
+
+		List<PostLibrary> list = postLibraryService.queryPostLibrary(
+				businessId, number, tag);
+		if (list.size() > 0) {
+			for (PostLibrary post : list) {
+				Map<String, String> eleMap = new HashMap<String, String>();
+				eleMap.put("postId", post.getId() + "");
+				eleMap.put("title", post.getTitle());
+				String author = post.getAuthor();
+				eleMap.put("author", "".equals(author) || author == null ? "无"
+						: author);
+				eleMap.put("sourceUrl", post.getSourceUrl());
+				eleMap.put("digest", post.getDigest());
+				eleMap.put("imageUrl", post.getImageUrl());
+				resultList.add(eleMap);
+			}
+		}
+		response.getWriter()
+				.print(StringUtil.JSONCallBack(request, resultList));
+	}
+
+	/**
+	 * 查询代表媒体
+	 * @throws IOException
+	 */
+	@RequestMapping("/getmedia")
+	public void queryWechatByType(HttpServletResponse response,
+			HttpServletRequest request, @RequestParam("types") String ids)
+			throws IOException {
+		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
+		if (ids == null || "".equals(ids)) {
+			response.getWriter().print(
+					StringUtil.JSONCallBack(request, resultList));
+		} else {
+			String[] idArrayStr = ids.split("[^\\d]");
+			int[] idArray = new int[idArrayStr.length];
+			for (int i = 0; i < idArrayStr.length; i++) {
+				idArray[i] = Integer.parseInt(idArrayStr[i]);
+			}
+
+			List<WechatBasic> list = wechatBasicService
+					.queryWechatByType(idArray);
+			if (list.size() > 0) {
+				for (WechatBasic wb : list) {
+					Map<String, String> eleMap = new HashMap<String, String>();
+					eleMap.put("mediaId", wb.getId() + "");
+					eleMap.put("name", wb.getName());
+					eleMap.put("fanQuantity", "10W+");
+					eleMap.put("accountImageUrl", wb.getAccountImageUrl());
+					eleMap.put("QRCode", wb.getAccountQrcode());
+					resultList.add(eleMap);
+				}
+			}
+			response.getWriter().print(
+					StringUtil.JSONCallBack(request, resultList));
+		}
+	}
 
 	/**
 	 * 新增下发广告
@@ -60,13 +137,13 @@ public class AllotAdController {
 			HttpServletResponse response,
 			@RequestParam("businessId") int businessId,// 企业id
 			@RequestParam("postId") int postId,// 广告id
-			@RequestParam("exceptMedia")String exceptMedia,//删除媒体
+			@RequestParam("exceptMedia") String exceptMedia,// 删除媒体
 			@RequestParam("mediaType") String mediaType,// 媒体类型
 			@RequestParam("startDate") String startDate,// 广告生效时间
 			@RequestParam("endDate") String endDate,// 广告失效时间
 			@RequestParam("priceType") int priceType,// 出价类型
 			@RequestParam("budget") BigDecimal budget// 预算
-			//@RequestParam("userId") int userId// 用户id
+	// @RequestParam("userId") int userId// 用户id
 	) throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		BigDecimal price = new BigDecimal("0.038");// 广告价格
@@ -100,62 +177,4 @@ public class AllotAdController {
 
 	}
 
-	/**
-	 * 查询推广内容
-	 * 
-	 * @throws IOException
-	 */
-	@RequestMapping("/sponsorads")
-	@ResponseBody
-	public String querySponsorAds(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam("businessId") int businessId,
-			@RequestParam("draw") String draw,
-			@RequestParam(value = "title", required = false) String title,
-			@RequestParam("start") int start,
-			@RequestParam("length") int length,
-			@RequestParam("status") int status,
-			
-			@RequestParam(value = "order[0][column]", required = false) String columnStr,
-			@RequestParam(value = "order[0][dir]", required = false) String sort)
-			throws IOException {
-		SimpleDateFormat sdf =new SimpleDateFormat();
-		int column = 0;
-		if (columnStr != null && !"".equals(columnStr)) {
-			column = Integer.parseInt(columnStr);
-		}
-		int pageSize = 0;
-		if (length != 0) {
-			pageSize = start / length;
-		}
-		if(title==null){
-			title="";
-		}
-		List<SponsorAds> ads = sponsorAdsService.queryAds(businessId, title,
-				pageSize, length, status, column, sort);
-		int totalCount = sponsorAdsService.queryAdsCounts(businessId, title,
-				status);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("draw", draw);
-		map.put("recordsTotal", totalCount);
-		map.put("recordsFiltered", totalCount);
-		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-		if (ads.size() > 0) {
-			for (SponsorAds ad : ads) {
-				String time=sdf.format(ad.getStartDate())+"至"+sdf.format(ad.getEndDate());
-				Map<String, String> elementMap = new HashMap<String, String>();
-				elementMap.put("adId", ad.getId()+"");
-				elementMap.put("title", ad.getTitle());
-				elementMap.put("time", time);
-				elementMap.put("mediaType", "");
-				elementMap.put("status", ad.getStatus()+"");
-				elementMap.put("reachUser", "");
-				elementMap.put("budget", ad.getBudget()+"");
-				result.add(elementMap);
-			}
-		}
-		map.put("data", result);
-		return mapper.writeValueAsString(map);
-	}
 }
