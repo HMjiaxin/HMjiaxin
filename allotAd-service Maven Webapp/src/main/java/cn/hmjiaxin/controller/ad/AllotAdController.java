@@ -92,6 +92,7 @@ public class AllotAdController {
 
 	/**
 	 * 查询代表媒体
+	 * 
 	 * @throws IOException
 	 */
 	@RequestMapping("/getmedia")
@@ -168,13 +169,17 @@ public class AllotAdController {
 		boolean flag = sponsorAdsService.addNewAd(businessId, postId,
 				mediaType, start, end, price, priceType, budget);
 
-
 		response.getWriter().print(StringUtil.JSONCallBack(request, flag));
 
 	}
+
 	/**
 	 * 广告状态修改--停止
 	 */
-	
+	public void changeAdStatus(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam("adId") int adId,
+			@RequestParam("status") int status) {
+//		sponsorAdsService.stopAd(adId,status);
+	}
 
 }

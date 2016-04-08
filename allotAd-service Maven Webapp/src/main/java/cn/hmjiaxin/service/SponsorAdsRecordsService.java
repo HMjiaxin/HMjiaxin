@@ -33,15 +33,18 @@ public class SponsorAdsRecordsService {
 	 *            广告主id
 	 */
 	public BigDecimal[] queryReadRecords(int adId, int sponsorId) {
+		int[] nom = new int[10];
 		BigDecimal result[] = new BigDecimal[10];
+		for(int i=0;i<result.length;i++){
+			result[i]=new BigDecimal(nom[i]);
+		}
 		String a = sponsorAdsRecordsDao.queryReadRecords(adId, sponsorId);
 		if (a == null) {
-			return new BigDecimal[10];
+			return result;
 		}
 		String[] s = a.split(",");
 		for (int i = 0; i < s.length; i++) {
 			result[i] = new BigDecimal(s[i]);
-
 		}
 		return result;
 	}
