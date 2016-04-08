@@ -168,11 +168,7 @@ public class AllotAdController {
 		boolean flag = sponsorAdsService.addNewAd(businessId, postId,
 				mediaType, start, end, price, priceType, budget);
 
-		/*
-		 * boolean flag = commonService.insertAccountHistory(businessId, userId,
-		 * budget, "申请广告预算", 0, "");
-		 * response.getWriter().print(StringUtil.JSONCallBack(request, flag));
-		 */
+
 		response.getWriter().print(StringUtil.JSONCallBack(request, flag));
 
 	}
