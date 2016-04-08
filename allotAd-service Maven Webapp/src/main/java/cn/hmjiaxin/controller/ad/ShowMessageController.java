@@ -96,54 +96,80 @@ public class ShowMessageController {
 		if (ads.size() > 0) {
 			for (SponsorAds ad : ads) {
 				// 查询触达人数/阅读数
-				BigDecimal [] readRecords=sponsorAdsRecordsService.queryReadRecords(ad.getId(),
-						businessId);
+				BigDecimal[] readRecords = sponsorAdsRecordsService
+						.queryReadRecords(ad.getId(), businessId);
 
 				String time = sdf.format(ad.getStartDate()) + "至"
 						+ sdf.format(ad.getEndDate());
 				Map<String, String> elementMap = new HashMap<String, String>();
-				elementMap.put("postCount",readRecords[0]+"");//下发总数
-				elementMap.put("intPageReadUser",readRecords[1]+"");// 图文页阅读人数
-				elementMap.put("intPageReadCount",readRecords[2]+"");// 图文页阅读次数
-				elementMap.put("oriPageReadUser",readRecords[3]+"");// 原文页的阅读人数
-				elementMap.put("oriPageReadCount",readRecords[4]+"");// 原文页的阅读次数
-				elementMap.put("shareUser",readRecords[5]+"");// 分享人数
-				elementMap.put("shareCount",readRecords[6]+"");// 分享次数
-				elementMap.put("addToFavUser",readRecords[7]+"");// 收藏人数
-				elementMap.put("addToFavCount",readRecords[8]+"");// 收藏次数
-				elementMap.put("postCost",readRecords[9]+"");// 总消耗
-				String mediaType=ad.getMediaType();//媒体类型
+				elementMap.put("postCount", readRecords[0] + "");// 下发总数
+				elementMap.put("intPageReadUser", readRecords[1] + "");// 图文页阅读人数
+				elementMap.put("intPageReadCount", readRecords[2] + "");// 图文页阅读次数
+				elementMap.put("oriPageReadUser", readRecords[3] + "");// 原文页的阅读人数
+				elementMap.put("oriPageReadCount", readRecords[4] + "");// 原文页的阅读次数
+				elementMap.put("shareUser", readRecords[5] + "");// 分享人数
+				elementMap.put("shareCount", readRecords[6] + "");// 分享次数
+				elementMap.put("addToFavUser", readRecords[7] + "");// 收藏人数
+				elementMap.put("addToFavCount", readRecords[8] + "");// 收藏次数
+				elementMap.put("postCost", readRecords[9] + "");// 总消耗
+				String mediaType = ad.getMediaType();// 媒体类型
 				if (!"".equals(mediaType)) {
-					mediaType=commonService.getMediaType(mediaType);
+					mediaType = commonService.getMediaType(mediaType);
 				}
 				elementMap.put("adId", ad.getId() + "");
 				elementMap.put("title", ad.getTitle());
 				elementMap.put("time", time);
 				elementMap.put("mediaType", mediaType);
 				elementMap.put("status", ad.getStatus() + "");
-//				elementMap.put("reachUser", "");
+				// elementMap.put("reachUser", "");
 				elementMap.put("budget", ad.getBudget() + "");
 				result.add(elementMap);
 			}
 		}
 		map.put("data", result);
-		response.getWriter().print(StringUtil.JSONCallBackForDataTables(request, map));
+		response.getWriter().print(
+				StringUtil.JSONCallBackForDataTables(request, map));
 	}
 
 	/**
 	 * 展示关键指标
+	 * 
+	 * @throws IOException
 	 */
 	@RequestMapping("/keyindex")
 	public void keyIndex(HttpServletResponse response,
 			HttpServletRequest request,
 			@RequestParam("businessId") int businessId,
-			@RequestParam("days") String days) {
-		if (days == null || "".equals(days) ) {
-			days="7";
+			@RequestParam("days") String days) throws IOException {
+		if (days == null || "".equals(days)) {
+			days = "7";
 		}
+
+		BigDecimal[] queryResult = sponsorAdsRecordsService.querykeyIndex(
+				businessId, days);
+		Map<String, String> elementMap = new HashMap<String, String>();
+		elementMap.put("postCount", queryResult[0] + "");// 下发总数
+		elementMap.put("intPageReadUser", queryResult[1] + "");// 图文页阅读人数
+		elementMap.put("oriPageReadCount", queryResult[2] + "");// 原文页阅读次数
+		elementMap.put("postCost", queryResult[3] + "");// 花费
+
+		response.getWriter()
+				.print(StringUtil.JSONCallBack(request, elementMap));
+	}
+	
+	/**
+	 * 饼状图--受众构成
+	 */
+	@RequestMapping("/composition")
+	public void audienceComposition(){
 		
-		BigDecimal[] queryResult=sponsorAdsRecordsService.querykeyIndex(businessId,days);
-		
-		System.out.println();
+	}
+	/**
+	 * 折线图--推广效果趋势
+	 */
+	@RequestMapping("/trendchart")
+	public void trendChart(HttpServletResponse response,
+			HttpServletRequest request,@RequestParam("businessId")int businessId){
+		sponsorAdsRecordsService.queryRecord(businessId);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ch.qos.logback.classic.Logger;
 import cn.hmjiaxin.dao.AccountDao;
 import cn.hmjiaxin.dao.BusinessDao;
 import cn.hmjiaxin.dao.PostLibraryDao;
@@ -24,6 +26,7 @@ import cn.hmjiaxin.model.Business;
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.PostLibrary;
 import cn.hmjiaxin.model.SponsorAds;
+import cn.hmjiaxin.model.SponsorAdsRecords;
 
 @Service
 public class SponsorAdsService {
@@ -44,6 +47,8 @@ public class SponsorAdsService {
 		this.accountDao = accountDao;
 
 	}
+	private static final Logger logger = (Logger) LoggerFactory
+			.getLogger(SponsorAdsService.class);
 	/**
 	 * 新增一条新的广告，并扣除预算
 	 * @param businessId
@@ -139,5 +144,30 @@ public class SponsorAdsService {
 		}
 		return sponsorAdsDao.queryAdsCount(businessId, title, status);
 	}
-
+	@Transactional
+	public boolean stopPostAd(int adId, int status) {
+		SponsorAds sponsorAd=sponsorAdsDao.findOne(adId);
+		int statusOrig=sponsorAd.getStatus();
+		logger.info("==================================开始================================");
+		logger.info(status+"");
+		if (status!=statusOrig) {
+			return false;
+		}else{
+			logger.info("==================================修改金额================================");
+			BigDecimal budget=sponsorAd.getBudget();//广告预算
+			BigDecimal cost=sponsorAd.getCost();//花费
+			BigDecimal balance=budget.subtract(cost);//余额
+			BusinessAccount account=accountDao.findByBusinessId(sponsorAd.getBusiness().getId());
+			BigDecimal score=account.getScore();//账户余额
+			BigDecimal adScore=account.getAdScore();//广告花费
+			account.setAdScore(adScore.add(cost));
+			account.setScore(score.add(balance));
+			sponsorAd.setStatus(3);
+			//此处还需要删除发布的广告信息
+			accountDao.save(account);
+			sponsorAdsDao.save(sponsorAd);
+			return true;
+		}
+		
+	}
 }

@@ -1,8 +1,12 @@
 package cn.hmjiaxin.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +39,8 @@ public class SponsorAdsRecordsService {
 	public BigDecimal[] queryReadRecords(int adId, int sponsorId) {
 		int[] nom = new int[10];
 		BigDecimal result[] = new BigDecimal[10];
-		for(int i=0;i<result.length;i++){
-			result[i]=new BigDecimal(nom[i]);
+		for (int i = 0; i < result.length; i++) {
+			result[i] = new BigDecimal(nom[i]);
 		}
 		String a = sponsorAdsRecordsDao.queryReadRecords(adId, sponsorId);
 		if (a == null) {
@@ -59,15 +63,53 @@ public class SponsorAdsRecordsService {
 		}
 		String queryResultStr = sponsorAdsRecordsDao.queryKeyIndex(businessId,
 				day);
+		System.out.println();
+		System.out
+				.println("=====================================================");
+		System.out.println(queryResultStr);
+		System.out.println();
+		System.out.println();
 		if (queryResultStr == null) {
-			return new BigDecimal[4];
+			return new BigDecimal[] { new BigDecimal("0"), new BigDecimal("0"),
+					new BigDecimal("0"), new BigDecimal("0") };
 		}
 		String[] queryResult = queryResultStr.split(",");
 		result = new BigDecimal[queryResult.length];
 		for (int i = 0; i < queryResult.length; i++) {
 			result[i] = new BigDecimal(queryResult[i]);
 		}
+		System.out.println(JSONArray.fromObject(result));
 		return result;
+
+	}
+
+	public void queryRecord(int businessId) {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		Long day = 7L;
+
+		List<String> queryResultList = sponsorAdsRecordsDao
+				.querySevenDayRecord(businessId, day);
+		List<String> postTimeList = new ArrayList<String>();
+		List<String> postCount = new ArrayList<String>();
+		List<String> intPageReadUser = new ArrayList<String>();
+		List<String> intPageReadCount = new ArrayList<String>();
+		for (int i = 0; i < queryResultList.size(); i++) {
+			String[] eleStr = queryResultList.get(i).split(",");
+
+			calendar.add(calendar.DATE, i + 1);
+			Date oDate = calendar.getTime();
+			String postTimeString = sdf.format(oDate);
+			if (postTimeString.equals(eleStr[0])) {
+
+				
+			} else {
+				
+			}
+
+		}
 
 	}
 }

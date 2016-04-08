@@ -26,10 +26,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hmjiaxin.model.BusinessAccount;
 import cn.hmjiaxin.model.PostLibrary;
+import cn.hmjiaxin.model.ReturnResult;
 import cn.hmjiaxin.model.SponsorAds;
 import cn.hmjiaxin.model.WechatBasic;
 import cn.hmjiaxin.service.CommonService;
 import cn.hmjiaxin.service.PostLibraryService;
+import cn.hmjiaxin.service.SponsorAdsRecordsService;
 import cn.hmjiaxin.service.SponsorAdsService;
 import cn.hmjiaxin.service.WechatBasicService;
 import cn.hmjiaxin.util.StringUtil;
@@ -39,15 +41,17 @@ public class AllotAdController {
 	private WechatBasicService wechatBasicService;
 	private SponsorAdsService sponsorAdsService;
 	private PostLibraryService postLibraryService;
+	private SponsorAdsRecordsService sponsorAdsRecordsService;
 
 	@Autowired
 	public AllotAdController(WechatBasicService wechatBasicService,
 			SponsorAdsService sponsorAdsService,
-			PostLibraryService postLibraryService) {
+			PostLibraryService postLibraryService,SponsorAdsRecordsService sponsorAdsRecordsService) {
 		super();
 		this.wechatBasicService = wechatBasicService;
 		this.sponsorAdsService = sponsorAdsService;
 		this.postLibraryService = postLibraryService;
+		this.sponsorAdsRecordsService=sponsorAdsRecordsService;
 	}
 
 	/**
@@ -175,11 +179,24 @@ public class AllotAdController {
 
 	/**
 	 * 广告状态修改--停止
+	 * @throws IOException 
 	 */
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param adId
+	 * @param status
+	 * @throws IOException
+	 */
+	@RequestMapping("/changeadstatus")
 	public void changeAdStatus(HttpServletRequest request,
 			HttpServletResponse response, @RequestParam("adId") int adId,
-			@RequestParam("status") int status) {
-//		sponsorAdsService.stopAd(adId,status);
+			@RequestParam("status") int status) throws IOException {
+		boolean flag=sponsorAdsService.stopPostAd(adId,status);
+		ReturnResult rr;
+		rr=flag?new ReturnResult(1, "操作成功"):new ReturnResult(0, "操作失败");
+		response.getWriter().print(StringUtil.JSONCallBack(request, rr));
 	}
 
 }
