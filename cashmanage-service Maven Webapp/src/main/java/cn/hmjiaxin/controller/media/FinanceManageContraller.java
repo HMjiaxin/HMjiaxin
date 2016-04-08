@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -36,6 +38,7 @@ import cn.hmjiaxin.util.StringUtil;
 public class FinanceManageContraller {
 	private BusinessAccountHistoryService accountHistoryService;
 	private BusinessAccountService accountService;
+	
 
 	@Autowired
 	public FinanceManageContraller(
@@ -57,7 +60,7 @@ public class FinanceManageContraller {
 			@RequestParam("start") int start,
 			@RequestParam("length") int length, @RequestParam("type") int type// 查询类型0所有记录1提现记录2收入纪录
 	) throws IOException {
-		DecimalFormat df=new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
@@ -91,7 +94,7 @@ public class FinanceManageContraller {
 		if (list.size() > 0) {
 			for (BusinessAccountHistory bah : list) {
 				Map<String, String> eleMap = new HashMap<String, String>();
-				eleMap.put("status", bah.getStatus()+"");
+				eleMap.put("status", bah.getStatus() + "");
 				eleMap.put("id", bah.getId() + "");
 				eleMap.put("score", df.format(bah.getScore()));
 				eleMap.put("description", bah.getDescription());
