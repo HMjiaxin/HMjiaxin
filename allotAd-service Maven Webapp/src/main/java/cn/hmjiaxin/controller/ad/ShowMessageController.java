@@ -75,7 +75,7 @@ public class ShowMessageController {
 			throws IOException {
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
-		SimpleDateFormat sdf = new SimpleDateFormat();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		int column = 0;
 		if (columnStr != null && !"".equals(columnStr)) {
 			column = Integer.parseInt(columnStr);

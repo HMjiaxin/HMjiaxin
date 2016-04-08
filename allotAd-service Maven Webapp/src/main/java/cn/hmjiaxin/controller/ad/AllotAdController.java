@@ -176,5 +176,9 @@ public class AllotAdController {
 		response.getWriter().print(StringUtil.JSONCallBack(request, flag));
 
 	}
+	/**
+	 * 广告状态修改--停止
+	 */
+	
 
 }
